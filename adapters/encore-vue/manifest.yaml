@@ -7,7 +7,7 @@
 #
 # Conformant to contract/schemas/adapter-manifest.schema.yaml (1.1.0).
 #
-# The runnable scaffold tree is the encore-vue-template repository (a neutral,
+# The runnable scaffold tree is the template-encore repository (a neutral,
 # single-author Encore.ts + Vue 3 + rauthy app). This manifest fully specifies
 # the adapter and its conventions match that tree. Create-eligibility is gated on
 # publishing the scaffold repository (see scaffold.source); until then the
@@ -160,10 +160,10 @@ agents:
 scaffold:
   source:
     kind: "upstream-git"
-    remote: "stagecraft-ing/encore-vue-template"
+    remote: "stagecraft-ing/template-encore"
     default_ref: "main"
   description: >
-    The base Encore.ts + Vue 3 (PrimeVue) + rauthy project: the encore-vue-template
+    The base Encore.ts + Vue 3 (PrimeVue) + rauthy project: the template-encore
     repository, a neutral single-author evolution of the upstream template (auth is
     rauthy OIDC + mock; the design system is PrimeVue). The single generator
     (scripts/setup-app.ts) and the dual generator (scripts/setup-dual-app.ts) emit

@@ -80,7 +80,7 @@ adapter; the process and contract layers never change.
 
 One adapter ships: **`encore-vue`** (Encore.ts + Vue 3 / PrimeVue / rauthy OIDC),
 specification-complete and verified against its scaffold tree. Create-eligibility
-is gated on publishing that scaffold repository (`encore-vue-template`). See
+is gated on publishing that scaffold repository (`template-encore`). See
 `adapters/README.md`.
 The framework core (process + contract) is complete and adapter-ready.
 

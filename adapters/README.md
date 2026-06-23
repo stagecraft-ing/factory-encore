@@ -31,7 +31,7 @@ PostgreSQL (Encore `SQLDatabase`, tagged-template SQL, no ORM), and OpenID Conne
 authentication via rauthy. It supports single and dual deployment topologies.
 
 This adapter is **specification-complete** and its conventions are verified
-against the runnable scaffold tree (the neutral `encore-vue-template` repository,
+against the runnable scaffold tree (the neutral `template-encore` repository,
 referenced by `scaffold.source`). Create-eligibility is gated on publishing that
 repository under the declared remote; until it is published the adapter fully
 documents the stack and is locally verifiable, but cannot fetch the scaffold to
