@@ -6,8 +6,7 @@ A create or edit form that submits to one operation.
 
 - PrimeVue inputs (`InputText`, `Select`, `Checkbox`, `Textarea`, `DatePicker`)
   bound to a typed model.
-- Validate against the shared zod schema before submit; show field errors with
-  PrimeVue `Message`.
+- Validate inputs before submit; show field errors with PrimeVue `Message`.
 - Submit `on-submit` to the page's operation; the mutation carries the CSRF
   token. On success, navigate to the detail or list page; on error, surface the
   server message.

@@ -79,8 +79,9 @@ patterns, validation rules, and a scaffold source. Adding a stack means adding a
 adapter; the process and contract layers never change.
 
 One adapter ships: **`encore-vue`** (Encore.ts + Vue 3 / PrimeVue / rauthy OIDC),
-specification-complete. Its runnable scaffold source is a tracked follow-up, so
-it documents the stack but is not yet Create-eligible. See `adapters/README.md`.
+specification-complete and verified against its scaffold tree. Create-eligibility
+is gated on publishing that scaffold repository (`encore-vue-template`). See
+`adapters/README.md`.
 The framework core (process + contract) is complete and adapter-ready.
 
 ## Directory structure

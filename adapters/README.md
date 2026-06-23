@@ -30,12 +30,12 @@ A neutral adapter for an Encore.ts backend with one or two Vue 3 SPAs on PrimeVu
 PostgreSQL (Encore `SQLDatabase`, tagged-template SQL, no ORM), and OpenID Connect
 authentication via rauthy. It supports single and dual deployment topologies.
 
-This adapter is **specification-complete**: its manifest, agents, patterns, and
-invariants fully describe how to scaffold the stack. It is **not yet
-Create-eligible** because the runnable scaffold tree it points at
-(`scaffold/`, the forthcoming neutral `encore-vue-template` repository) is a
-separate clean-room follow-up and is not yet bundled. Until then the adapter
-documents the stack but cannot scaffold a project end to end.
+This adapter is **specification-complete** and its conventions are verified
+against the runnable scaffold tree (the neutral `encore-vue-template` repository,
+referenced by `scaffold.source`). Create-eligibility is gated on publishing that
+repository under the declared remote; until it is published the adapter fully
+documents the stack and is locally verifiable, but cannot fetch the scaffold to
+create a project end to end.
 
 To contribute another adapter, follow `docs/how-to.md` ("Adding an adapter") and
 the Adapter Manifest schema.

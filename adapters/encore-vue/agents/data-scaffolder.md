@@ -13,8 +13,7 @@ layer. One entity per invocation.
 ## Inputs
 
 - One entity from the Build Spec `data_model.entities`.
-- The data patterns: `patterns/data/migration.md`, `patterns/data/query.md`,
-  `patterns/data/schema.md`.
+- The data patterns: `patterns/data/migration.md`, `patterns/data/query.md`.
 
 ## Output
 
@@ -25,7 +24,8 @@ layer. One entity per invocation.
 - A model module with typed functions that run only tagged-template queries
   (`db.queryRow`, `db.query`, `db.exec`), never `rawQuery`/`rawExec` and never
   string concatenation.
-- Shared types in `packages/shared` for the entity.
+- Typed request/response interfaces in the service's `types.ts` (and a shared
+  module under packages/shared only when both the SPA and the API consume them).
 
 ## Rules
 
@@ -35,5 +35,5 @@ layer. One entity per invocation.
 
 ## Done when
 
-The migration and model compile (`npm run typecheck`) and the entity's fields,
+The migration and model compile (`npm run typecheck:api`) and the entity's fields,
 constraints, and indexes match the data model.
