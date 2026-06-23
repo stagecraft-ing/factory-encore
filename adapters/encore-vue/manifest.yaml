@@ -175,7 +175,12 @@ scaffold:
     single-internal: ["user-management"]
     dual: []
   setup_commands:
+    # apps/api is a standalone package (own lockfile, excluded from the npm
+    # workspaces), so it installs separately; generate-keys writes the dev RS256
+    # JWT signing keys the auth service needs (gitignored; production uses secrets).
     - "npm install"
+    - "npm --prefix apps/api install"
+    - "npm --prefix apps/api run generate-keys"
   entry_point: "scripts/setup-app.ts"
   runtime: "node-24"
   args_schema:
