@@ -2,8 +2,9 @@
 
 `factory-encore` is an implementation of the Open Agentic Platform (OAP) factory
 standard. OAP defines the contract and the governance surface; this repository
-supplies the process layer that produces conformant artifacts, and (in a later
-phase) the adapters that consume them. This document maps the layers onto OAP.
+supplies the process layer that produces conformant artifacts and the
+`acme-vue-encore` adapter (with its create-time generator) that consumes them.
+This document maps the layers onto OAP.
 
 ## What OAP owns
 

@@ -92,6 +92,13 @@ Because it now carries governed code, this repository has a kernel: a
 terminal `ci-gate` aggregates the governance gate, the generator tests, the
 cross-repo lockstep, and an AI PR review.
 
+The generator is bound to the baseline it clones by a cross-repo **lockstep**
+(`adapters/acme-vue-encore/scripts/lockstep/baseline.lock.json`, spec 031): the
+lockfile pins the `template-encore` ref, the baseline core services, the module
+catalog membership, and the SHA-256 of the frozen `001`/`002` app-invariant
+specs. `npm run lockstep` and the `ci-lockstep` job fail visibly on any upstream
+drift, so the generator can never silently diverge from the baseline it targets.
+
 ## Directory structure
 
 ```

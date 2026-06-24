@@ -1,5 +1,5 @@
 ---
-adapter: encore-vue
+adapter: acme-vue-encore
 safety_tier: tier2
 mutation: scoped-write
 mutation_scope: ["apps/api/**", "apps/web/**", "apps/web-internal/**", ".env.*.example"]
