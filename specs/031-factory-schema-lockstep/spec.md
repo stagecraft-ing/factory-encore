@@ -91,6 +91,11 @@ to `pinned`, fills `hashes` with the SHA-256 of each invariant spec.md, and bump
 is visible (a notice), never a silent skip, and a later ref or hash bump remains
 a deliberate, coupling-gated edit to this spec.
 
+Recorded refreshes: `pinnedRef` advanced from `b37d3d7` to `c7603ee`
+(template-encore main) on 2026-06-24 after verifying the intervening main commits
+touched no pinned unit: the 001/002 spec.md hashes re-hash identical and the core
+services are unchanged, so the bump moved only the ref, not the enforced content.
+
 #### FR-004: Fail-visible, never skipped-green
 
 A missing baseline source, an unreadable pin, a missing invariant spec, or any
