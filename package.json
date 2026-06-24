@@ -1,7 +1,7 @@
 {
   "name": "factory-encore",
   "version": "0.1.0",
-  "description": "Create-time home of the OAP factory: the deterministic acme-vue-encore generator, its module catalog, the from-Build-Spec orchestration, and the FAC-S* gates that govern them.",
+  "description": "Create-time home of the OAP factory: the deterministic acme-vue-encore generator, its module catalog, the from-Build-Spec orchestration, and the spec-spine kernel + cross-repo lockstep that govern them.",
   "private": true,
   "type": "module",
   "author": "Bartek Kus",

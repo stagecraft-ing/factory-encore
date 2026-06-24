@@ -1,10 +1,10 @@
 {
-  "$comment": "Cross-repo lockstep pin (spec 031). Binds the acme-vue-encore generator + module catalog to the template-encore baseline structure and to the frozen app-invariant spec hashes (001 architecture, 002 security/data). The invariant-hash pin was deferred through Phase 1 and Phase 2 (001 absorbed the static-serving wiring from spec 010 in Phase 2, so pinning its hash earlier would have locked a value about to change) and is now ACTIVE: the Phase 3 handshake flipped invariantPin.status to 'pinned', filled the 001/002 spec.md SHA-256 content hashes, and bumped pinnedRef to the finalized template-encore main. Re-hash drift on either invariant now fails the gate (FR-002). A future ref or hash bump remains a deliberate, coupling-gated edit to spec 031.",
+  "$comment": "Cross-repo lockstep pin (spec 031). Binds the acme-vue-encore generator + module catalog to the template-encore baseline structure and to the frozen app-invariant spec hashes (001 architecture, 002 security/data). The invariant-hash pin was deferred through Phase 1 and Phase 2 (001 absorbed the static-serving wiring from spec 010 in Phase 2, so pinning its hash earlier would have locked a value about to change) and is now ACTIVE: the Phase 3 handshake flipped invariantPin.status to 'pinned', filled the 001/002 spec.md SHA-256 content hashes, and bumped pinnedRef to the finalized template-encore main. Re-hash drift on either invariant now fails the gate (FR-002). pinnedRef was refreshed from b37d3d7 to c7603ee (template-encore main) once the intervening commits were verified to touch no pinned unit: the 001/002 spec.md hashes re-hash identical, the core services are unchanged. A future ref or hash bump remains a deliberate, coupling-gated edit to spec 031.",
   "upstreamSource": "github.com/stagecraft-ing/template-encore",
-  "pinnedRef": "b37d3d753ebcf62e39e19f637f9864e7e46f3c43",
+  "pinnedRef": "c7603eefa28395216b6834eeaf31d9caf6709416",
   "invariantPin": {
     "status": "pinned",
-    "reason": "Phase 3 handshake (2026-06-23): 001/002 finalized in template-encore at b37d3d7. Each value is the SHA-256 of the invariant spec.md at the pinned ref (matching check.ts sha256File); a re-hash mismatch is reported as DRIFT and fails the gate.",
+    "reason": "Phase 3 handshake (2026-06-23): 001/002 finalized in template-encore at b37d3d7; pin advanced to c7603ee (main) on 2026-06-24 with both hashes re-verified identical. Each value is the SHA-256 of the invariant spec.md at the pinned ref (matching check.ts sha256File); a re-hash mismatch is reported as DRIFT and fails the gate.",
     "specs": [
       "specs/001-encore-app-architecture/spec.md",
       "specs/002-security-data-invariants/spec.md"
