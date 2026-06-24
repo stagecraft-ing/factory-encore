@@ -1,8 +1,10 @@
 # How to use factory-encore
 
-This repository holds the process and contract layers of the factory. It is
-consumed by a host platform (the Open Agentic Platform) that runs the pipeline.
-This guide explains the moving parts and how to extend them.
+This repository holds the process and contract layers of the factory and the
+create-time home of the `acme-vue-encore` adapter (its deterministic generator,
+module catalog, and from-Build-Spec orchestration). A host platform such as the
+Open Agentic Platform can run the pipeline against these layers. This guide
+explains the moving parts and how to extend them.
 
 ## Reading a run
 
