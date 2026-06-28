@@ -39,8 +39,10 @@ import * as readline from 'node:readline'
 import { fileURLToPath } from 'node:url'
 import { execSync } from 'node:child_process'
 import { manifestSchema, type ModuleManifest } from './lib/manifest.schema'
-import { composeModule } from './lib/encore-composer'
 import { isCarriedForward, SKIP_ANYWHERE } from './lib/born-with'
+import { profileModules } from './lib/adapter-manifest'
+import { installModule } from './lib/install-module'
+import { loadTemplateJson, saveTemplateJson } from './lib/template-json'
 
 // adapters/acme-vue-encore (scripts/.. resolves to the adapter root). The
 // module catalog this generator composes from lives here, alongside the
@@ -179,14 +181,57 @@ function loadModuleManifest(moduleName: string): ModuleManifest {
   return manifestSchema.parse(raw)
 }
 
-/** Compose optional domain modules into the generated app's apps/api. */
+/**
+ * Compose domain modules into the generated app through the shared, complete
+ * install path (STRUCT-2 parity): web files, template.json record, backend
+ * services/migrations/secrets/cors, web module loader, env vars, and
+ * workspace/dep changes. `moduleNames` must already be dependency-ordered
+ * (see resolveModuleOrder). template.json is written once when any module is
+ * composed (this is also the only writer of template.json on the generate
+ * path; the base profiles compose nothing and emit none, as before).
+ */
 export function composeWithModules(dest: string, moduleNames: string[]): void {
-  const apiDir = path.join(dest, 'apps', 'api')
+  if (moduleNames.length === 0) return
+  let state = loadTemplateJson(dest)
   for (const moduleName of moduleNames) {
     const manifest = loadModuleManifest(moduleName)
-    const moduleDir = path.join(MODULES_ROOT, moduleName)
-    composeModule({ moduleDir, manifest, apiDir })
+    state = installModule({ projectRoot: dest, adapterRoot: ADAPTER_ROOT, moduleName, manifest, state }).state
   }
+  saveTemplateJson(dest, state)
+}
+
+/**
+ * Expand a requested module set to its full dependency closure and return it in
+ * an install-safe order (each module's `requires` come before it), deduplicated.
+ * Composing a profile's default modules (manifest scaffold.profiles[].modules)
+ * and any --with modules go through this one dependency-aware path, so a profile
+ * that ships a module-with-requires (e.g. api-gateway needs security-core) still
+ * composes correctly.
+ */
+export function resolveModuleOrder(requested: string[]): string[] {
+  const ordered: string[] = []
+  const done = new Set<string>()
+  const onStack = new Set<string>()
+  const visit = (name: string): void => {
+    if (done.has(name)) return
+    if (onStack.has(name)) throw new Error(`Cyclic module dependency involving "${name}"`)
+    onStack.add(name)
+    for (const dep of loadModuleManifest(name).requires) visit(dep)
+    onStack.delete(name)
+    done.add(name)
+    ordered.push(name)
+  }
+  for (const name of requested) visit(name)
+  return ordered
+}
+
+/**
+ * The effective module set for a run: the profile's manifest-declared default
+ * modules (the STRUCT-1 single authority) unioned with any --with modules,
+ * dependency-expanded and ordered.
+ */
+export function effectiveModules(profileKey: string, withModules: string[]): string[] {
+  return resolveModuleOrder([...profileModules(ADAPTER_ROOT, profileKey), ...withModules])
 }
 
 // ---------------------------------------------------------------------------
@@ -215,7 +260,10 @@ interface CliOptions {
   profileKey: string
   dest: string
   source: string
+  /** The --with values, verbatim (for display). */
   withModules: string[]
+  /** Effective composed set: profile defaults union --with, dependency-ordered. */
+  modules: string[]
   dryRun: boolean
   autoYes: boolean
   noInstall: boolean
@@ -246,12 +294,14 @@ function parseArgs(argv: string[]): CliOptions {
   }
 
   const noInstall = argv.includes('--no-install') || process.env.NO_INSTALL === 'true'
+  const withModules = parseFlagValues(argv, '--with')
   return {
     profile,
     profileKey,
     dest: path.resolve(destRaw),
     source,
-    withModules: parseFlagValues(argv, '--with'),
+    withModules,
+    modules: effectiveModules(profileKey, withModules),
     dryRun: argv.includes('--dry-run'),
     autoYes: argv.includes('--yes'),
     noInstall,
@@ -295,16 +345,19 @@ async function main(): Promise<void> {
   console.log(`  AUTH_DRIVER:  ${opts.profile.authDriver}`)
   console.log(`  Source:       ${opts.source}`)
   console.log(`  Dest:         ${opts.dest}`)
-  if (opts.withModules.length > 0) {
-    console.log(`  With modules: ${opts.withModules.join(', ')}`)
+  if (opts.modules.length > 0) {
+    console.log(`  Modules:      ${opts.modules.join(', ')}`)
+    if (opts.withModules.length > 0) {
+      console.log(`    (--with:    ${opts.withModules.join(', ')})`)
+    }
   }
   if (opts.dryRun) {
     console.log('\n  [DRY RUN, no changes will be made]')
     console.log(`\n  Plan:`)
     console.log(`    1. Clone baseline into ${opts.dest} (born-with kernel + app; generator artifacts skipped)`)
     console.log(`    2. Set AUTH_DRIVER=${opts.profile.authDriver} in apps/api/.env.example`)
-    if (opts.withModules.length > 0) {
-      console.log(`    3. Compose modules: ${opts.withModules.join(', ')}`)
+    if (opts.modules.length > 0) {
+      console.log(`    3. Compose modules: ${opts.modules.join(', ')}`)
     }
     return
   }
@@ -336,11 +389,13 @@ async function main(): Promise<void> {
     console.log('  apps/api/.env.example not found, skipped AUTH_DRIVER selection')
   }
 
-  // 3. Compose optional domain modules
-  if (opts.withModules.length > 0) {
-    console.log('\nStep 3: Compose optional domain modules')
-    composeWithModules(opts.dest, opts.withModules)
-    console.log(`  Composed: ${opts.withModules.join(', ')}`)
+  // 3. Compose domain modules: the profile's manifest-declared defaults
+  // (scaffold.profiles[].modules, the STRUCT-1 single authority) plus any
+  // --with modules, dependency-ordered.
+  if (opts.modules.length > 0) {
+    console.log('\nStep 3: Compose domain modules')
+    composeWithModules(opts.dest, opts.modules)
+    console.log(`  Composed: ${opts.modules.join(', ')}`)
   }
 
   // 3b. Initialize a fresh git repo in the generated app (non-fatal,
