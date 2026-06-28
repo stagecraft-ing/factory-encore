@@ -1,7 +1,7 @@
 import { api, APIError, Query } from "encore.dev/api";
 import { getAuthData } from "~encore/auth";
 import { requireRole } from "../lib/roles";
-import { logAuditEvent } from "../lib/audit";
+import { writeAudit } from "../lib/audit";
 import * as model from "./model";
 import type { AppRole, UserSummary } from "./types";
 
@@ -83,11 +83,11 @@ export const updateUser = api(
     const u = await model.setUserActive(id, isActive);
     if (!u) throw APIError.notFound("User not found");
     // INV-8: durable audit trail for privileged mutations (best-effort).
-    await logAuditEvent({
+    await writeAudit({
       action: "UPDATE",
       tableName: "user_account",
       recordId: id,
-      userId: auth.userID,
+      actorId: auth.userID,
       oldData: { isActive: before.is_active },
       newData: { isActive },
     });
@@ -128,11 +128,11 @@ export const assignUserRoles = api(
     const before = await model.getAppRolesForUser(id);
     await model.assignAppRoles(id, roleIds, auth.userID);
     // INV-8: durable audit trail for privileged mutations (best-effort).
-    await logAuditEvent({
+    await writeAudit({
       action: "UPDATE",
       tableName: "user_role",
       recordId: id,
-      userId: auth.userID,
+      actorId: auth.userID,
       oldData: { roleIds: before.map((r) => r.id) },
       newData: { roleIds },
     });
