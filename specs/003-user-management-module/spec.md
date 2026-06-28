@@ -1,5 +1,5 @@
 ---
-id: "009-user-management-module"
+id: "003-user-management-module"
 title: "User-management: the reference Encore service module"
 status: approved
 created: "2026-06-10"
@@ -8,13 +8,13 @@ kind: feature
 domain: generator
 risk: medium
 implementation: complete
-# 002-security-data-invariants / 003-multi-driver-auth-service describe the
-# base app's frozen security + auth contract; they live in template-encore
-# and are pinned here via the lockstep (031-factory-schema-lockstep). Only the
+# The `security-data-invariants` and `multi-driver-auth-service` specs describe
+# the base app's frozen security + auth contract; they live in template-encore
+# and are pinned here via the lockstep (006-factory-schema-lockstep). Only the
 # in-corpus dependencies are kept.
 depends_on:
-  - "007-module-manifest-schema"
-  - "008-encore-generator-core"
+  - "001-module-manifest-schema"
+  - "002-encore-generator-core"
 code_aliases: ["USER_MANAGEMENT_MODULE"]
 summary: >
   The reference service module: a self-contained user-management Encore
@@ -26,7 +26,7 @@ establishes:
   - "adapters/acme-vue-encore/modules/user-management/"
 ---
 
-# 009 — User-management: the reference Encore service module
+# 003. User-management: the reference Encore service module
 
 ## 1. Purpose
 
@@ -34,28 +34,30 @@ The user-management module is the canonical example of a feature module in
 this template. It delivers a self-contained Encore service directory — with
 its own typed `api()` endpoints, tagged-template SQL model, SQL schema file, and
 `encore.service.ts` — composable into any generated application by the
-generator core (spec 008). It is the first end-to-end exercise of the
+generator core (spec 002). It is the first end-to-end exercise of the
 composition pipeline and sets the shape that every subsequent feature module
 follows.
 
 Beyond demonstrating the module shape, it provides genuine business value: an
 admin-CRUD role catalog (`app_role`) with per-user assignment (`user_role`),
 admin endpoints for user identity management, and a complete audit trail on
-every mutation (INV-8 per spec 002).
+every mutation (INV-8 per the `security-data-invariants` spec).
 
 ## 2. Territory
 
 This spec owns everything under `modules/user-management/`:
 
-- `manifest.json` — the module's manifest v2 declaration (spec 007)
+- `manifest.json`: the module's manifest v2 declaration (spec 001)
 - `files/user-management/` — the Encore service directory copied to
   `apps/api/user-management/` on compose
 
 The spec references `apps/api/lib/`, `apps/api/db/`, and `apps/api/auth/`
-(all owned by spec 002/003) as the substrate this module builds on. It does
+(all owned by the `security-data-invariants` and `multi-driver-auth-service`
+specs) as the substrate this module builds on. It does
 not own those paths.
 
-Auth-driver selection is a configuration concern (spec 003). No driver files
+Auth-driver selection is a configuration concern (the `multi-driver-auth-service`
+spec). No driver files
 are copied or owned here.
 
 ## 3. Behavior
@@ -70,7 +72,7 @@ The module MUST deliver a complete Encore service directory at
   middleware chain as the base `auth` service.
 - **`types.ts`** — `AppRole`, `UserSummary`, and request/response interfaces
   for every endpoint.
-- **`model.ts`** — tagged-template queries (INV-2 per spec 002) over
+- **`model.ts`**: tagged-template queries (INV-2 per the `security-data-invariants` spec) over
   `app_role`, `user_role`, and `user_account`. Role assignment runs in a
   transaction (`db.begin()` → `commit`/`rollback`).
 - **`users.ts`** — admin endpoints over identity and assignments.
@@ -82,8 +84,8 @@ containing the SQL schema that creates the `app_role` and `user_role` tables.
 ### FR-002 — Role model: app-managed tables
 
 The service MUST persist app-managed roles in two new tables, keyed to the
-existing `user_account` identity in the single `SQLDatabase("app")` (spec 001,
-INV-2/INV-11):
+existing `user_account` identity in the single `SQLDatabase("app")` (the
+`encore-app-architecture` spec, INV-2/INV-11):
 
 - **`app_role`** — the application's own role catalog (`pk_app_role`,
   `role_name` unique-ci, `description`, `is_system`, `created_at`), seeded
@@ -121,7 +123,7 @@ composed, so the `user_account` FK target exists before the schema runs.
 
 Every endpoint MUST be declared `{ expose: true, auth: true }` and MUST call
 `requireRole(getAuthData()!.roles, "admin", "user-manager")` (any-of, INV-1
-per spec 002).
+per the `security-data-invariants` spec).
 
 ### FR-004 — Input validation on `assignAppRoles`
 
@@ -213,7 +215,8 @@ couple --base origin/main` is clean.
 - Wiring app-managed roles into the JWT (the opt-in token-epoch / role-source
   capability) — a downstream per-app step.
 - SPA admin-view response-shape changes — frontend concern.
-- Auth-driver files (driver selection is configuration only, per spec 003).
-- The dual-app generator — spec 010.
-- Per-service databases — INV-11 (spec 002) forbids them; the single
+- Auth-driver files (driver selection is configuration only, per the
+  `multi-driver-auth-service` spec).
+- The dual-app generator: spec 004.
+- Per-service databases: INV-11 (the `security-data-invariants` spec) forbids them; the single
   `SQLDatabase("app")` is the only database.

@@ -1,8 +1,8 @@
 {
   "mapping": {
     "dependsOn": [
-      "008-encore-generator-core",
-      "009-user-management-module"
+      "002-encore-generator-core",
+      "003-user-management-module"
     ],
     "implementingPaths": [
       {
@@ -42,9 +42,9 @@
         }
       }
     ],
-    "specId": "010-dual-app-generator",
+    "specId": "004-dual-app-generator",
     "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "87c6d3fd97bcb869b052a2dc3546c59d8196095c0e1a4ba5a9e06dba029f7390"
+  "shardHash": "48eda3c28861beab3d9bbab66df36be4d96fb62031a7386f115b30e27faa8d73"
 }

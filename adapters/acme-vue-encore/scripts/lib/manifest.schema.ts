@@ -37,14 +37,14 @@ const migrationSchema = z.object({
 /**
  * Module manifest contract — v2 (Encore compile-time service composition).
  *
- * Spec 008 (`manifest-schema-v2-module-taxonomy`), the P1 of spec 008. The
+ * Spec 001 (`module-manifest-schema`). The
  * Express runtime-registry fields (`apiRegistrations`, `authDriverRegistration`,
  * `sideEffectImports`) are removed: Encore discovers services from the
  * filesystem (`encore.service.ts` per directory) and has no `app.use` ordering
  * and no runtime auth-driver registry. Composition is now declared as service
  * directories plus declarative `encore.app` / `infra.config.json` / per-service
  * middleware-array contributions. The new fields are defined here and populated
- * by spec 008.
+ * by spec 002.
  */
 export const manifestSchema = z.object({
   name: z.string().min(1),

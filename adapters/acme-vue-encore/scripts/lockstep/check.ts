@@ -1,15 +1,16 @@
 /**
- * Cross-repo lockstep check (spec 031-factory-schema-lockstep).
+ * Cross-repo lockstep check (spec 006-factory-schema-lockstep).
  *
  * Binds the acme-vue-encore generator + module catalog to the template-encore
  * baseline it clones, in three dimensions:
  *
  *   1. Frozen app-invariant pin. The generator must not drift from the app's
- *      frozen invariants (001 architecture, 002 security/data). Their spec.md
- *      content hashes are pinned in baseline.lock.json; the check re-reads them
- *      from the baseline at the pinned ref and refuses any mismatch. This
- *      dimension was DEFERRED through Phase 1 and Phase 2 (001 absorbed the
- *      static-serving wiring from spec 010 in Phase 2) and is now ACTIVE
+ *      frozen invariants (the `encore-app-architecture` and
+ *      `security-data-invariants` invariants). Their spec.md content hashes are
+ *      pinned in baseline.lock.json; the check re-reads them from the baseline at
+ *      the pinned ref and refuses any mismatch. This dimension was DEFERRED
+ *      through Phase 1 and Phase 2 (`encore-app-architecture` absorbed the
+ *      static-serving wiring from spec 004 in Phase 2) and is now ACTIVE
  *      (status: "pinned"): the Phase 3 handshake filled the hashes, so a re-hash
  *      mismatch is reported as DRIFT and fails. A still-deferred pin (status:
  *      "deferred") instead emits a visible notice, never a silent pass.
@@ -165,7 +166,7 @@ function main(): void {
   const source = resolveSource(process.argv.slice(2))
   if (!source) {
     console.error(
-      '::error::lockstep baseline source not found. Pass --source <template-encore-checkout> or set TEMPLATE_ENCORE_SOURCE. This gate is fail-visible, never skipped-green (spec 031).',
+      '::error::lockstep baseline source not found. Pass --source <template-encore-checkout> or set TEMPLATE_ENCORE_SOURCE. This gate is fail-visible, never skipped-green (spec 006).',
     )
     process.exit(1)
   }
@@ -177,7 +178,7 @@ function main(): void {
     console.error(`\nLOCKSTEP FAILED (${result.failures.length} drift / structure violation(s)):`)
     for (const f of result.failures) console.error(`  - ${f}`)
     console.error(
-      '\nThe generator has drifted from the template-encore baseline it clones. Re-verify the baseline, then (in Phase 3) bump pinned_ref + the pinned hashes in baseline.lock.json (a coupling-gated edit to specs/031-factory-schema-lockstep).',
+      '\nThe generator has drifted from the template-encore baseline it clones. Re-verify the baseline, then (in Phase 3) bump pinned_ref + the pinned hashes in baseline.lock.json (a coupling-gated edit to specs/006-factory-schema-lockstep).',
     )
     process.exit(1)
   }

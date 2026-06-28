@@ -58,7 +58,7 @@ Every module manifest declares:
 
 ## user-management: the reference module
 
-The `user-management` module is the reference implementation for service modules (spec 009). It demonstrates:
+The `user-management` module is the reference implementation for service modules (spec 003). It demonstrates:
 
 - An Encore service directory (`files/apps/api/user-management/`) with typed endpoints behind auth + `requireRole`.
 - A database migration (`db/1_user_management.up.sql`) creating the `app_role` catalog and `user_role` assignments.

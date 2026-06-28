@@ -46,8 +46,8 @@ This spec owns the CI workflow surface and the standards corpus. The spec-spine
 configuration itself (`spec-spine.toml`) and the toolchain manifest
 (`package.json`) are always-hashed governance core; `package.json` annotates
 this spec as its owner via `"spec-spine": { "spec": "000-factory-kernel" }`.
-The lockstep gate is owned by spec 031; the generator and its meta-specs are
-owned by specs 007-010 and 020.
+The lockstep gate is owned by spec 006; the generator and its meta-specs are
+owned by specs 001-005.
 
 ## 3. Behavior
 
@@ -108,8 +108,8 @@ posted PR notice, and classifies an auth/permission error as a hard failure.
 
 ## 5. Out of scope
 
-- **The lockstep gate** (`ci-lockstep.yml` + the checker): owned by spec 031.
-- **The generator mechanism**: owned by specs 007-010.
+- **The lockstep gate** (`ci-lockstep.yml` + the checker): owned by spec 006.
+- **The generator mechanism**: owned by specs 001-004.
 - **Run-side / born-with verification** (tenant-tail provenance + certificate):
   a produced-app concern, not a generator-home concern; deliberately absent
   from this kernel.

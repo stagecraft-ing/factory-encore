@@ -1,7 +1,7 @@
 {
   "mapping": {
     "dependsOn": [
-      "008-encore-generator-core"
+      "002-encore-generator-core"
     ],
     "implementingPaths": [
       {
@@ -75,9 +75,9 @@
         }
       }
     ],
-    "specId": "020-architecture-doc-governance",
+    "specId": "005-architecture-doc-governance",
     "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "b98b3aef9e7735d080a62a7a347f8a40ca016b878dec4ed9f39587036f84c5dc"
+  "shardHash": "4d864e420f0d4cf7cf1f4e670fe82e2c39a19e88a491b8d690601fdc7ff07922"
 }

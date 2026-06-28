@@ -102,10 +102,10 @@ export function readRealManifest(moduleName: string): Record<string, unknown> {
   ) as Record<string, unknown>
 }
 
-// The auth-* / service-auth modules were retired in spec 009 (auth-driver
+// The auth-* / service-auth modules were retired in spec 003 (auth-driver
 // selection is configuration over the in-app drivers, not file-copy modules).
 // These four are the surviving cross-cutting/infra modules; their own Encore
-// reconciliation is staged by the taxonomy (spec 008), not P3.
+// reconciliation is staged by the taxonomy (spec 002), not P3.
 export const ALL_MODULE_NAMES = [
   'api-gateway',
   'data-postgres',
@@ -228,7 +228,7 @@ function writeFile(root: string, rel: string, content: string): void {
  *   app (carried):     apps/, packages/, root config, docs/ (minus dev docs),
  *                      specs/001 + specs/002 (the frozen app-invariant specs)
  *   generator-artifact (skipped): scripts/, modules/, orchestration/, tools/,
- *                      .derived/, specs/008 + specs/020 (generator meta-specs),
+ *                      .derived/, specs/002 + specs/005 (generator meta-specs),
  *                      Makefile, node_modules/, .git/, docs/encore-ts
  *
  * Returns the baseline root path.
@@ -287,8 +287,8 @@ export function makeBaselineFixture(): string {
   // --- app-invariant specs (carried), generator meta-specs (skipped) ---
   writeFile(root, 'specs/001-encore-app-architecture/spec.md', '# 001 app architecture\n')
   writeFile(root, 'specs/002-security-data-invariants/spec.md', '# 002 security/data\n')
-  writeFile(root, 'specs/008-encore-generator-core/spec.md', '# 008 generator meta\n')
-  writeFile(root, 'specs/020-architecture-doc-governance/spec.md', '# 020 generator meta\n')
+  writeFile(root, 'specs/002-encore-generator-core/spec.md', '# 002 generator meta\n')
+  writeFile(root, 'specs/005-architecture-doc-governance/spec.md', '# 005 generator meta\n')
 
   // --- generator artifacts (skipped) ---
   writeFile(root, 'scripts/setup-app.ts', "console.log('generator')\n")

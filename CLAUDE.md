@@ -41,9 +41,10 @@ architecture and `docs/oap-integration.md` for how the layers map onto OAP.
   repository now carries a spec-spine kernel and a CI surface. Every spec-claimed
   code path changes together with its owning spec.md (the coupling gate);
   `spec-spine compile` / `lint --fail-on-warn` / `index check` must stay green.
-  The generator/baseline lockstep (spec 031) is active: `baseline.lock.json` pins
+  The generator/baseline lockstep (spec 006) is active: `baseline.lock.json` pins
   the `template-encore` ref, its core services, the module catalog, and the
-  001/002 app-invariant spec.md hashes, so upstream drift fails `npm run lockstep`
+  `encore-app-architecture` / `security-data-invariants` app-invariant spec.md
+  hashes, so upstream drift fails `npm run lockstep`
   and the `ci-lockstep` job.
 
 ## Build & verify
@@ -51,7 +52,7 @@ architecture and `docs/oap-integration.md` for how the layers map onto OAP.
 - `npm test` runs the generator/module/lockstep vitest suite; `npm run typecheck`
   runs `tsc --noEmit`.
 - `npm run lockstep` checks the generator against the pinned `template-encore`
-  baseline (spec 031).
+  baseline (spec 006).
 - `npm run spec:compile` / `spec:lint` / `spec:check` (or `npm run spec:all`)
   keep the spec-spine corpus green; the coupling gate is `spec-spine couple`.
 

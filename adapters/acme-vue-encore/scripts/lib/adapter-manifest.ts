@@ -7,7 +7,7 @@
  * the declaration and the behaviour cannot drift (the prior bug: three
  * declarations said `internal` ships `user-management`, the generator shipped
  * none). Only the slice the generator needs is parsed and validated; the rest
- * of the manifest is the stagecraft-admission concern (spec 198).
+ * of the manifest is the stagecraft-admission concern (OAP).
  */
 
 import fs from 'node:fs'

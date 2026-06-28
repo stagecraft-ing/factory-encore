@@ -106,9 +106,9 @@
         }
       }
     ],
-    "specId": "007-module-manifest-schema",
+    "specId": "001-module-manifest-schema",
     "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "ff5c6122f609044267143aadf5c50c8778492529f621877040cfdcfe9c4e7622"
+  "shardHash": "b23f2c660c1aaff8e6ef252e6262dd21903379bf2c91aff37eeff2bf4ed0658b"
 }

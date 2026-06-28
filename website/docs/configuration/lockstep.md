@@ -1,6 +1,6 @@
 # Cross-repo lockstep
 
-The generator clones an external baseline (`template-encore`) and must not silently drift from the app invariants frozen there. The lockstep mechanism (spec 031) pins the baseline ref and validates it in CI.
+The generator clones an external baseline (`template-encore`) and must not silently drift from the app invariants frozen there. The lockstep mechanism (spec 006) pins the baseline ref and validates it in CI.
 
 ## The lockfile
 
