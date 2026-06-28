@@ -1,4 +1,4 @@
--- User-management: app-managed role catalog + per-user assignments (spec 009).
+-- User-management: app-managed role catalog + per-user assignments (spec 003).
 --
 -- Distinct from the IdP-sourced user_account.user_roles[] (owned by the auth
 -- service, read into the JWT). app_role is the application's OWN role registry
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS app_role (
 CREATE UNIQUE INDEX IF NOT EXISTS uq_app_role_name ON app_role (lower(role_name));
 
 CREATE TABLE IF NOT EXISTS user_role (
-  fk_user_account TEXT NOT NULL REFERENCES user_account (pk_user_account) ON DELETE CASCADE,
+  fk_user_account UUID NOT NULL REFERENCES user_account (id) ON DELETE CASCADE,
   fk_app_role     TEXT NOT NULL REFERENCES app_role (pk_app_role) ON DELETE CASCADE,
   assigned_by     TEXT,
   assigned_at     TIMESTAMPTZ NOT NULL DEFAULT now(),

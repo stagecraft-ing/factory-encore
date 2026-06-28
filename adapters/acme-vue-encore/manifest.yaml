@@ -175,13 +175,13 @@ scaffold:
   #   core (ships IN the baseline apps/api): the lib, db, health, auth, gateway,
   #     and web services, plus the security-core configuration. These are always
   #     present; they are not composed.
-  #   composable extras (composed via --with): user-management (the app-managed
-  #     role catalog + admin views) and api-gateway (the connectivity-test view).
-  #     data-postgres / data-redis are declarative knobs.
-  modules:
-    single-public: []
-    single-internal: ["user-management"]
-    dual: []
+  #   composable extras: user-management (the app-managed role catalog + admin
+  #     views) and api-gateway (the connectivity-test view); data-postgres /
+  #     data-redis are declarative knobs. Which extras a profile ships BY DEFAULT
+  #     is declared once below in profiles[].modules (STRUCT-1 single authority,
+  #     read by scripts/setup-app.ts); a run can compose further extras via
+  #     --with. The prior variant-keyed scaffold.modules map was a second
+  #     declaration the generator never read; it has been removed.
   setup_commands:
     # apps/api is a standalone package (own lockfile, excluded from the npm
     # workspaces), so it installs separately; generate-keys writes the dev RS256
@@ -194,9 +194,12 @@ scaffold:
   args_schema:
     type: object
     properties:
+      # setup-app.ts profiles only. "dual" is a topology, not a profile: it
+      # routes to scripts/setup-dual-app.ts (see dual_stack below), so it is
+      # intentionally NOT a --profile value here (STRUCT-3).
       profile:
         type: string
-        enum: ["minimal", "public", "internal", "dual"]
+        enum: ["minimal", "public", "internal"]
       dest:
         type: string
       source:

@@ -1,5 +1,5 @@
 /**
- * Tests for the Encore dual-app generator (spec 010).
+ * Tests for the Encore dual-app generator (spec 004).
  *
  * wireInternalSpa is tested against a minimal fixture (fast); the full
  * setupDualApp is exercised against the synthetic lean baseline
@@ -131,7 +131,7 @@ describe('setupDualApp: two independent Encore apps', () => {
   it('carries the app-invariant specs but no generator artifacts in either variant', () => {
     for (const v of DUAL_VARIANTS) {
       expect(fs.existsSync(path.join(roots[v.dir], 'specs', '001-encore-app-architecture'))).toBe(true)
-      expect(fs.existsSync(path.join(roots[v.dir], 'specs', '008-encore-generator-core'))).toBe(false)
+      expect(fs.existsSync(path.join(roots[v.dir], 'specs', '002-encore-generator-core'))).toBe(false)
       expect(fs.existsSync(path.join(roots[v.dir], 'modules'))).toBe(false)
       expect(fs.existsSync(path.join(roots[v.dir], 'scripts'))).toBe(false)
     }

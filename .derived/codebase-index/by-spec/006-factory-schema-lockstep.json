@@ -1,7 +1,7 @@
 {
   "mapping": {
     "dependsOn": [
-      "008-encore-generator-core"
+      "002-encore-generator-core"
     ],
     "implementingPaths": [
       {
@@ -75,9 +75,9 @@
         }
       }
     ],
-    "specId": "031-factory-schema-lockstep",
+    "specId": "006-factory-schema-lockstep",
     "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "2e0763addfe2c98ff55bdab2b2fe785455b203bff3badabb0ac96f34fb4c79ba"
+  "shardHash": "a486ff120cdc37996ba08abc460633d539bb7a70dbf22d9f6669571e28fbcb27"
 }

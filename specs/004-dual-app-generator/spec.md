@@ -1,5 +1,5 @@
 ---
-id: "010-dual-app-generator"
+id: "004-dual-app-generator"
 title: "Dual-app generator: two independent Encore apps (external + staff, both rauthy OIDC)"
 status: approved
 created: "2026-06-10"
@@ -8,14 +8,14 @@ kind: feature
 domain: generator
 risk: medium
 implementation: complete
-# 005-spa-static-serving owns the served-location contract the staff-SPA wiring
-# conforms to (see FR-003); it is born-with the product (template-encore) and is
-# absorbing the static-serving wiring this spec previously detailed. The 010 that
-# lives here is the generator-only remainder; only the in-corpus generator
-# dependencies are kept.
+# The `spa-static-serving` spec owns the served-location contract the staff-SPA
+# wiring conforms to (see FR-003); it is born-with the product (template-encore)
+# and is absorbing the static-serving wiring this spec previously detailed. The
+# 004 that lives here is the generator-only remainder; only the in-corpus
+# generator dependencies are kept.
 depends_on:
-  - "008-encore-generator-core"
-  - "009-user-management-module"
+  - "002-encore-generator-core"
+  - "003-user-management-module"
 code_aliases: ["DUAL_APP_GENERATOR"]
 summary: >
   setup-dual-app.ts generates two independent Encore applications from one
@@ -29,7 +29,7 @@ establishes:
   - "adapters/acme-vue-encore/scripts/setup-dual-app.test.ts"
 ---
 
-# 010 — Dual-app generator: two independent Encore apps
+# 004. Dual-app generator: two independent Encore apps
 
 ## 1. Purpose
 
@@ -51,8 +51,8 @@ This spec owns:
 - `scripts/setup-dual-app.test.ts` — its test suite
 
 The generator reuses `copyTemplateBase` and `setAuthDriver` from
-`scripts/setup-app.ts` (spec 008). The staff-SPA static-serving wiring touches
-`apps/web-internal/vite.config.ts` (spec 005 contract) within the generated
+`scripts/setup-app.ts` (spec 002). The staff-SPA static-serving wiring touches
+`apps/web-internal/vite.config.ts` (the `spa-static-serving` contract) within the generated
 destination only — no template-source files are modified.
 
 ## 3. Behavior
@@ -81,23 +81,24 @@ variable in `.env.example` for each variant:
 - `public` → `AUTH_DRIVER=rauthy`
 - `internal` → `AUTH_DRIVER=rauthy`
 
-Selection is configuration over the in-app drivers (spec 003). No driver files
+Selection is configuration over the in-app drivers (the `multi-driver-auth-service`
+spec). No driver files
 are copied, moved, or deleted. The in-app `auth` service reads `AUTH_DRIVER`
 at startup to activate the appropriate driver. The two variants differ by
 trust zone and deployment, not by auth driver; both authenticate against the
 rauthy OIDC provider.
 
-### FR-003: Staff-SPA static-serving wiring (generator action; contract owned by product spec 005)
+### FR-003: Staff-SPA static-serving wiring (generator action; contract owned by the product `spa-static-serving` spec)
 
 The served-location contract (the `web` service's `api.static` declaration and
 the `build.outDir = ../api/web/build` target) is owned by the product's
-`005-spa-static-serving`, born-with template-encore. The product side is
-absorbing that wiring contract into 005; this spec owns only the **generator
-action** that applies it to the internal variant in the produced destination,
-and conforms to whatever 005 defines.
+`spa-static-serving` spec, born-with template-encore. The product side is
+absorbing that wiring contract into `spa-static-serving`; this spec owns only the
+**generator action** that applies it to the internal variant in the produced
+destination, and conforms to whatever `spa-static-serving` defines.
 
 For the **internal** variant, the staff SPA (`apps/web-internal`) MUST be
-wired into the same served location 005 defines:
+wired into the same served location `spa-static-serving` defines:
 
 1. `apps/web-internal/vite.config.ts` in the generated destination gains
    `build.outDir = ../api/web/build` (with `emptyOutDir: true`), mirroring
@@ -118,7 +119,7 @@ juggling, and no runtime module loader are present.
 ### FR-005 — Reuse of generator core
 
 The dual-app generator MUST reuse `copyTemplateBase` and `setAuthDriver` from
-`scripts/setup-app.ts` (spec 008) rather than duplicating their logic. Each
+`scripts/setup-app.ts` (spec 002) rather than duplicating their logic. Each
 variant is produced by one invocation of the copy-base pipeline followed by
 `setAuthDriver` with the variant's driver value.
 
@@ -139,7 +140,7 @@ non-interactively (suitable for CI and test automation).
 
 After generating both variants, `setup-dual-app` runs `git init` in each
 (developer-UX only, best-effort, independent repos). Like the single-app
-generator (spec 008, FR-014), this per-variant init MUST be skipped for
+generator (spec 002, FR-014), this per-variant init MUST be skipped for
 machine-driven runs: `--no-git` / `NO_GIT=true` and dry-run suppress it,
 and `--no-install` / `NO_INSTALL=true` implies `--no-git`, so a
 machine-driven dual run emits zero `.git` directories. The consuming
@@ -172,9 +173,9 @@ couple --base origin/main` is clean.
 
 - A shared-trust-zone single-app two-mount deployment (Option B) — the two
   independent apps design is locked; a shared-runtime single app is not built.
-- Reconciling generator documentation (`orchestration/**`, `docs/DUAL-APP-GUIDE.md`)
-  — spec 020.
+- Reconciling generator documentation (`orchestration/**`, `docs/DUAL-APP-GUIDE.md`):
+  spec 005.
 - The Encore container CD path for the internal SPA — the `encore-cd.yml.example`
   container path bundles whatever is in `apps/api/web/build`; redirecting the
   internal SPA's vite `outDir` for the container path is a downstream step.
-- The `web-app` input for SPA selection in the container deploy path: spec 012.
+- The `web-app` input for SPA selection in the container deploy path: the `azure-webapp-deploy` spec.

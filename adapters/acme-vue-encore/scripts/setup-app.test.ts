@@ -1,5 +1,5 @@
 /**
- * Tests for the Encore single-app generator (spec 008).
+ * Tests for the Encore single-app generator (spec 002).
  *
  * The setup-app CLI is split into pure, exported functions (resolveSource,
  * copyBaseline, setAuthDriver, composeWithModules) so the "lean baseline +
@@ -51,8 +51,8 @@ describe('copyBaseline: born-with carry-forward', () => {
   it('carries the frozen app-invariant specs (001, 002) but not the generator meta-specs', () => {
     expect(fs.existsSync(path.join(dest, 'specs', '001-encore-app-architecture'))).toBe(true)
     expect(fs.existsSync(path.join(dest, 'specs', '002-security-data-invariants'))).toBe(true)
-    expect(fs.existsSync(path.join(dest, 'specs', '008-encore-generator-core'))).toBe(false)
-    expect(fs.existsSync(path.join(dest, 'specs', '020-architecture-doc-governance'))).toBe(false)
+    expect(fs.existsSync(path.join(dest, 'specs', '002-encore-generator-core'))).toBe(false)
+    expect(fs.existsSync(path.join(dest, 'specs', '005-architecture-doc-governance'))).toBe(false)
   })
 
   it('does not carry generator artifacts (the generator, the catalog, orchestration, tooling)', () => {
@@ -72,7 +72,7 @@ describe('copyBaseline: born-with carry-forward', () => {
     expect(fs.existsSync(path.join(dest, 'docs', 'migration'))).toBe(false)
   })
 
-  it('keeps the tracked SPA placeholder apps/api/web/build/index.html (spec 005)', () => {
+  it('keeps the tracked SPA placeholder apps/api/web/build/index.html (spa-static-serving)', () => {
     expect(fs.existsSync(path.join(dest, 'apps', 'api', 'web', 'build', 'index.html'))).toBe(true)
   })
 

@@ -1,14 +1,14 @@
 /**
- * Dual-App Setup Script (Encore.ts), spec 010.
+ * Dual-App Setup Script (Encore.ts), spec 004.
  *
  * Produces TWO independent, standalone Encore apps under the destination
- * (Option A from spec 008's "Dual-app under Encore"):
+ * (Option A from spec 002's "Dual-app under Encore"):
  *
  *   <dest>/public     AUTH_DRIVER=rauthy    external-facing; web service serves apps/web
  *   <dest>/internal   AUTH_DRIVER=rauthy    staff-facing;   web service serves apps/web-internal
  *
  * Each subdirectory is a complete clone of the lean baseline (the same clone +
- * driver-selection core the single-app generator uses, spec 008), so each has
+ * driver-selection core the single-app generator uses, spec 002), so each has
  * its own Gateway + authHandler, secrets, and deploy/scale boundary, keeping the
  * external-vs-staff trust zones hard.
  *
@@ -56,7 +56,7 @@ export function wireInternalSpa(internalRoot: string): void {
       const buildBlock =
         '    build: {\n' +
         '      // Build the staff SPA into the Encore app tree so the web service\n' +
-        "      // (apps/api/web/static.ts) serves it at /!path. Mirrors apps/web (spec 010).\n" +
+        "      // (apps/api/web/static.ts) serves it at /!path. Mirrors apps/web (spec 004).\n" +
         "      outDir: fileURLToPath(new URL('../api/web/build', import.meta.url)),\n" +
         '      emptyOutDir: true,\n' +
         '    },\n'

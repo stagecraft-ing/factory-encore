@@ -43,11 +43,11 @@ export const GENERATOR_ARTIFACT_TOP_LEVEL: ReadonlySet<string> = new Set([
 // does not contain. This set is the generator home's knowledge of its own
 // meta-specs; it is kept in lockstep with specs/ in this repository.
 export const GENERATOR_META_SPEC_IDS: ReadonlySet<string> = new Set([
-  '007-module-manifest-schema',
-  '008-encore-generator-core',
-  '009-user-management-module',
-  '010-dual-app-generator',
-  '020-architecture-doc-governance',
+  '001-module-manifest-schema',
+  '002-encore-generator-core',
+  '003-user-management-module',
+  '004-dual-app-generator',
+  '005-architecture-doc-governance',
 ])
 
 // The born-with kernel: the governance substrate every produced app ships

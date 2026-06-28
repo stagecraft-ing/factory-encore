@@ -1,5 +1,5 @@
 ---
-id: "031-factory-schema-lockstep"
+id: "006-factory-schema-lockstep"
 title: "Generator/baseline lockstep: pin the generator to template-encore's frozen invariants"
 status: approved
 created: "2026-06-23"
@@ -8,20 +8,21 @@ kind: governance
 domain: ci-cd
 risk: medium
 implementation: complete
-depends_on: ["008-encore-generator-core"]
+depends_on: ["002-encore-generator-core"]
 code_aliases: ["FACTORY_SCHEMA_LOCKSTEP"]
 summary: >
   The generator clones the template-encore lean baseline, so it must not drift
-  from the app invariants frozen there (001 architecture, 002 security/data) nor
-  from the baseline's core-service and module-catalog shape. This spec stands up
-  a cross-repo lockstep: a committed lockfile pins the upstream ref, the baseline
-  core services, and the module catalog membership; a fail-visible CI gate
-  fetches the baseline at the pinned ref and refuses any drift. The 001/002
-  invariant-hash pin was DEFERRED through Phase 1 and Phase 2 (001 absorbed the
-  static-serving wiring from spec 010 in Phase 2) and is now ACTIVE: the Phase 3
-  handshake flipped the pin to "pinned", filled the 001/002 spec.md hashes, and
-  bumped pinnedRef to the finalized template-encore main, so a re-hash mismatch
-  on either invariant now fails the gate. Mirrors the OAP spec-212 pattern.
+  from the app invariants frozen there (`encore-app-architecture`,
+  `security-data-invariants`) nor from the baseline's core-service and
+  module-catalog shape. This spec stands up a cross-repo lockstep: a committed
+  lockfile pins the upstream ref, the baseline core services, and the module
+  catalog membership; a fail-visible CI gate fetches the baseline at the pinned
+  ref and refuses any drift. The invariant-hash pin was DEFERRED through Phase 1
+  and Phase 2 (`encore-app-architecture` absorbed the static-serving wiring from
+  spec 004 in Phase 2) and is now ACTIVE: the Phase 3 handshake flipped the pin
+  to "pinned", filled the invariant spec.md hashes, and bumped pinnedRef to the
+  finalized template-encore main, so a re-hash mismatch on either invariant now
+  fails the gate. Mirrors the OAP `factory-schema-lockstep` pattern.
 establishes:
   - "adapters/acme-vue-encore/scripts/lockstep/check.ts"
   - "adapters/acme-vue-encore/scripts/lockstep/check.test.ts"
@@ -29,29 +30,31 @@ establishes:
   - ".github/workflows/ci-lockstep.yml"
 ---
 
-# 031. Generator/baseline lockstep: pin the generator to template-encore's frozen invariants
+# 006. Generator/baseline lockstep: pin the generator to template-encore's frozen invariants
 
 ## 1. Purpose
 
 factory-encore does not author the runnable application: it clones the
-template-encore lean baseline and composes modules into it (spec 008). Two
+template-encore lean baseline and composes modules into it (spec 002). Two
 classes of upstream change would silently break a generated app:
 
-1. A change to the app's frozen invariants (001 architecture, 002
-   security/data), which the generator assumes but does not own.
+1. A change to the app's frozen invariants (the `encore-app-architecture` and
+   `security-data-invariants` invariants), which the generator assumes but does
+   not own.
 2. A reshape of the baseline (a renamed or removed core service) that the
    "lean baseline + compose" generator depends on structurally.
 
 Neither lives in this repository, so neither is reachable by the in-repo
 coupling gate. This spec binds them across the repository boundary, mirroring
-the OAP spec-212 factory-schema-lockstep pattern.
+the OAP `factory-schema-lockstep` pattern.
 
 ## 2. Territory
 
 This spec owns the lockstep checker, its committed lockfile, and the CI gate
-that runs it. The app invariants it pins (001, 002) are authored in
-template-encore; this spec pins their content, it does not redefine them. The
-generator that consumes the baseline is owned by spec 008.
+that runs it. The app invariants it pins (`encore-app-architecture`,
+`security-data-invariants`) are authored in template-encore; this spec pins
+their content, it does not redefine them. The generator that consumes the
+baseline is owned by spec 002.
 
 ## 3. Behavior
 
@@ -61,8 +64,9 @@ generator that consumes the baseline is owned by spec 008.
 `pinnedRef` (a full 40-hex commit SHA), `baselineStructure` (`coreServices` the
 generator clones, and `modules` the generator's own catalog covers), and
 `invariantPin` (the
-deferred-or-active 001/002 hash pin: a `status` of `deferred` or `pinned`, the
-`specs` list covering at least 001 and 002, and a `hashes` map filled only when
+deferred-or-active invariant hash pin: a `status` of `deferred` or `pinned`, the
+`specs` list covering at least the `encore-app-architecture` and
+`security-data-invariants` invariants, and a `hashes` map filled only when
 pinned). Bumping any pin is a coupling-gated edit to this spec.
 
 #### FR-002: Three-dimension verification
@@ -82,10 +86,11 @@ The checker MUST verify, against a baseline checkout at the pinned ref:
 
 #### FR-003: The invariant pin defers until the Phase 3 handshake, then activates
 
-While 001 was in flux `invariantPin.status` was `deferred` (Phase 1 and Phase 2):
-001 absorbed the static-serving wiring relocated out of spec 010 in Phase 2, so
-pinning its current hash earlier would have locked a value about to change. The
-Phase 3 handshake (after the template session finalized 001/002) flips `status`
+While `encore-app-architecture` was in flux `invariantPin.status` was `deferred`
+(Phase 1 and Phase 2): `encore-app-architecture` absorbed the static-serving
+wiring relocated out of spec 004 in Phase 2, so pinning its current hash earlier
+would have locked a value about to change. The Phase 3 handshake (after the
+template session finalized both invariants) flips `status`
 to `pinned`, fills `hashes` with the SHA-256 of each invariant spec.md, and bumps
 `pinnedRef` to the finalized baseline; this is the committed state. Any deferral
 is visible (a notice), never a silent skip, and a later ref or hash bump remains
@@ -93,14 +98,14 @@ a deliberate, coupling-gated edit to this spec.
 
 Recorded refreshes: `pinnedRef` advanced from `b37d3d7` to `c7603ee`
 (template-encore main) on 2026-06-24 after verifying the intervening main commits
-touched no pinned unit: the 001/002 spec.md hashes re-hash identical and the core
+touched no pinned unit: the invariant spec.md hashes re-hash identical and the core
 services are unchanged, so the bump moved only the ref, not the enforced content.
 
 #### FR-004: Fail-visible, never skipped-green
 
 A missing baseline source, an unreadable pin, a missing invariant spec, or any
 verification failure MUST fail the gate with a surfaced error. The gate is never
-skipped to a green result (OAP spec-212 FR-003 / AC-6 posture). In CI the
+skipped to a green result (OAP `factory-schema-lockstep` FR-003 / AC-6 posture). In CI the
 baseline is fetched by sparse checkout at the pinned ref from the public
 template-encore remote; a fetch failure fails the gate.
 
@@ -134,8 +139,10 @@ narrative changed).
 
 ## 5. Out of scope
 
-- **Authoring the invariants** (001, 002): owned upstream in template-encore.
-- **Schema parity for the OAP contract schemas**: covered by OAP's own spec-212
-  in the open-agentic-platform repository; this spec pins the app baseline, not
+- **Authoring the invariants** (`encore-app-architecture`,
+  `security-data-invariants`): owned upstream in template-encore.
+- **Schema parity for the OAP contract schemas**: covered by OAP's own
+  `factory-schema-lockstep` in the open-agentic-platform repository; this spec
+  pins the app baseline, not
   the contract schemas.
 - **Automatic ref bumping**: a pin bump is a deliberate, coupling-gated edit.

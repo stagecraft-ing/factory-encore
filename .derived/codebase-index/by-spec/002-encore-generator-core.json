@@ -1,7 +1,7 @@
 {
   "mapping": {
     "dependsOn": [
-      "007-module-manifest-schema"
+      "001-module-manifest-schema"
     ],
     "implementingPaths": [
       {
@@ -109,9 +109,9 @@
         }
       }
     ],
-    "specId": "008-encore-generator-core",
+    "specId": "002-encore-generator-core",
     "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "6d736e2d407d2685aa76565045284bc437397d8a9cf2510cbacb33e3bc76019c"
+  "shardHash": "5f2b192f569752aed3a481c1fc6ddd58aad31095ba439e3040988ee3e714f9a1"
 }

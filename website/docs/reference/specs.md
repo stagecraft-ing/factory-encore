@@ -7,12 +7,12 @@ The spec corpus (`specs/`) contains the governing specifications for factory-enc
 | ID | Title | Domain | Kind | Status |
 |----|-------|--------|------|--------|
 | 000-factory-kernel | Factory kernel: spec-spine governance and the resilient CI surface | governance | governance | approved |
-| 007-module-manifest-schema | Module manifest schema: declarative service composition and the module taxonomy | generator | architecture | approved |
-| 008-encore-generator-core | Encore generator core: copy-base + select-driver + merge-config | generator | feature | approved |
-| 009-user-management-module | User-management: the reference Encore service module | generator | feature | approved |
-| 010-dual-app-generator | Dual-app generator: two independent Encore apps (external + staff, both rauthy OIDC) | generator | feature | approved |
-| 020-architecture-doc-governance | Architecture documentation governance: human docs as derived views of the owning specs | generator | governance | approved |
-| 031-factory-schema-lockstep | Generator/baseline lockstep: pin the generator to template-encore's frozen invariants | generator | architecture | approved |
+| 001-module-manifest-schema | Module manifest schema: declarative service composition and the module taxonomy | generator | architecture | approved |
+| 002-encore-generator-core | Encore generator core: copy-base + select-driver + merge-config | generator | feature | approved |
+| 003-user-management-module | User-management: the reference Encore service module | generator | feature | approved |
+| 004-dual-app-generator | Dual-app generator: two independent Encore apps (external + staff, both rauthy OIDC) | generator | feature | approved |
+| 005-architecture-doc-governance | Architecture documentation governance: human docs as derived views of the owning specs | generator | governance | approved |
+| 006-factory-schema-lockstep | Generator/baseline lockstep: pin the generator to template-encore's frozen invariants | generator | architecture | approved |
 
 ## Closed taxonomies
 
@@ -50,14 +50,14 @@ Every spec declares the following in its YAML frontmatter:
 
 The governance kernel. It adopts spec-spine over the corpus and stands up the OAP resilient CI surface. The terminal `ci-gate` aggregates the governance gate, the generator test gate, the lockstep gate, and an AI PR review that passes with a visible notice on a Claude API failure (never a silent green).
 
-### 008-encore-generator-core
+### 002-encore-generator-core
 
 The single-app generator: `setup-app.ts` performs copy-base, select-driver, merge-config, and optional module composition. It reuses `copyTemplateBase` and `setAuthDriver` as composable primitives.
 
-### 010-dual-app-generator
+### 004-dual-app-generator
 
-The dual-app generator: `setup-dual-app.ts` produces two independent Encore applications (public + internal) from a single invocation. It reuses the core primitives from spec 008.
+The dual-app generator: `setup-dual-app.ts` produces two independent Encore applications (public + internal) from a single invocation. It reuses the core primitives from spec 002.
 
-### 031-factory-schema-lockstep
+### 006-factory-schema-lockstep
 
 The cross-repo lockstep. A committed lockfile (`baseline.lock.json`) pins the `template-encore` ref, core services, module catalog membership, and SHA-256 of frozen app-invariant spec hashes. The lockstep gate refuses any silent upstream drift.

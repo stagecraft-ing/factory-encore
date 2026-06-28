@@ -5,7 +5,7 @@
     ],
     "created": "2026-06-10",
     "dependsOn": [
-      "008-encore-generator-core"
+      "002-encore-generator-core"
     ],
     "domain": "docs",
     "establishes": [
@@ -22,7 +22,7 @@
         "path": "adapters/acme-vue-encore/scripts/readmes/"
       }
     ],
-    "id": "020-architecture-doc-governance",
+    "id": "005-architecture-doc-governance",
     "implementation": "complete",
     "kind": "governance",
     "owner": "bart",
@@ -37,7 +37,7 @@
     ],
     "risk": "low",
     "sectionHeadings": [
-      "020 — Architecture documentation governance: human docs as derived views of the owning specs",
+      "005. Architecture documentation governance: human docs as derived views of the owning specs",
       "1. Purpose",
       "2. Territory",
       "3. Behavior",
@@ -47,11 +47,11 @@
       "4. Acceptance criteria",
       "5. Out of scope"
     ],
-    "specPath": "specs/020-architecture-doc-governance/spec.md",
+    "specPath": "specs/005-architecture-doc-governance/spec.md",
     "status": "approved",
     "summary": "Human-facing architecture documentation is a derived view of the owning specs: CODEMAP.md, the orchestration/ guides, and the codemap/readme generators are mechanically coupled (an edit requires touching this spec); docs/ and README.md sit inside the coupling gate's built-in bypass floor, so their fidelity is enforced editorially — each doc names the spec(s) it derives from, and a doc change that contradicts an owning spec is a review-blocking defect.\n",
     "title": "Architecture documentation governance: human docs as derived views of the owning specs"
   },
-  "shardHash": "9708aeb2b6e3c696bda3d8cbc69a11709e5fb36d297fbc920c277bf5be57c4aa",
+  "shardHash": "702ddfc8473258763797b8962a05e54c47f5c7241852d284da665df62d6473bd",
   "specVersion": "1.1.0"
 }

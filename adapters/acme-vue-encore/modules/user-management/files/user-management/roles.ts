@@ -1,12 +1,12 @@
 import { api, APIError } from "encore.dev/api";
 import { getAuthData } from "~encore/auth";
 import { requireRole } from "../lib/roles";
-import { logAuditEvent } from "../lib/audit";
+import { writeAudit } from "../lib/audit";
 import * as model from "./model";
 import type { AppRole } from "./types";
 
 /**
- * Admin role-catalog CRUD (spec 009). app_role rows seeded as is_system cannot
+ * Admin role-catalog CRUD (spec 003). app_role rows seeded as is_system cannot
  * be deleted. Every endpoint is auth:true + requireRole("admin","user-manager").
  */
 
@@ -53,11 +53,11 @@ export const createRole = api(
       }
       throw err;
     }
-    await logAuditEvent({
+    await writeAudit({
       action: "INSERT",
       tableName: "app_role",
       recordId: role.id,
-      userId: auth.userID,
+      actorId: auth.userID,
       newData: { name: role.name, description: role.description },
     });
     return { role };
@@ -83,11 +83,11 @@ export const updateRole = api(
       description: description?.trim(),
     });
     if (!role) throw APIError.notFound("Role not found");
-    await logAuditEvent({
+    await writeAudit({
       action: "UPDATE",
       tableName: "app_role",
       recordId: id,
-      userId: auth.userID,
+      actorId: auth.userID,
       oldData: { name: before.name, description: before.description },
       newData: { name: role.name, description: role.description },
     });
@@ -112,11 +112,11 @@ export const deleteRole = api(
     if (!role) throw APIError.notFound("Role not found");
     if (role.isSystem) throw APIError.failedPrecondition("System roles cannot be deleted");
     await model.deleteRole(id);
-    await logAuditEvent({
+    await writeAudit({
       action: "DELETE",
       tableName: "app_role",
       recordId: id,
-      userId: auth.userID,
+      actorId: auth.userID,
       oldData: { name: role.name, description: role.description },
     });
     return { deleted: true };

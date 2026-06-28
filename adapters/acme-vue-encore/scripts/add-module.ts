@@ -8,14 +8,12 @@ import {
   loadTemplateJson,
   saveTemplateJson,
   isModuleInstalled,
-  addModuleToState,
   removeModuleFromState,
   getFileOwner,
   type TemplateJson,
 } from './lib/template-json'
-import { generateWebModulesTs } from './lib/modules-ts-generator'
-import { mergeEnvVars, commentOutEnvVars } from './lib/env-merger'
-import { composeModule } from './lib/encore-composer'
+import { commentOutEnvVars } from './lib/env-merger'
+import { installModule } from './lib/install-module'
 
 // Allow --root <path> or ROOT env var to override the destination project root.
 // This lets the orchestrator invoke add-module.ts from the template cache
@@ -77,19 +75,6 @@ function removePackageDeps(deps: Record<string, Record<string, string>>): void {
   }
 }
 
-function addPackageDeps(deps: Record<string, Record<string, string>>): void {
-  for (const [workspace, packages] of Object.entries(deps)) {
-    const pkgPath = path.join(PROJECT_ROOT, workspace, 'package.json')
-    if (!fs.existsSync(pkgPath)) continue
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
-    if (!pkg.dependencies) pkg.dependencies = {}
-    for (const [dep, version] of Object.entries(packages)) {
-      pkg.dependencies[dep] = version
-    }
-    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf-8')
-  }
-}
-
 function reverseWorkspaces(changes: NonNullable<ModuleManifest['workspaceChanges']>): void {
   const pkgPath = path.join(PROJECT_ROOT, 'package.json')
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
@@ -102,24 +87,6 @@ function reverseWorkspaces(changes: NonNullable<ModuleManifest['workspaceChanges
     for (const w of changes.remove) {
       if (!workspaces.includes(w)) pkg.workspaces.push(w)
     }
-  }
-  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf-8')
-}
-
-function applyWorkspaces(changes: NonNullable<ModuleManifest['workspaceChanges']>): void {
-  const pkgPath = path.join(PROJECT_ROOT, 'package.json')
-  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
-  const workspaces: string[] = pkg.workspaces ?? []
-
-  if (changes.add) {
-    for (const w of changes.add) {
-      if (!workspaces.includes(w)) workspaces.push(w)
-    }
-  }
-  if (changes.remove) {
-    pkg.workspaces = workspaces.filter((w: string) => !changes.remove!.includes(w))
-  } else {
-    pkg.workspaces = workspaces
   }
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf-8')
 }
@@ -259,67 +226,30 @@ async function addModule(moduleName: string, options: { skipConfirm: boolean; dr
     }
   }
 
-  // Step 10: Copy files
-  for (const [src, dest] of fileEntries) {
-    const srcPath = path.join(MODULES_ROOT, 'modules', moduleName, 'files', src)
-    const destPath = path.resolve(PROJECT_ROOT, dest)
-    fs.mkdirSync(path.dirname(destPath), { recursive: true })
-    fs.copyFileSync(srcPath, destPath)
-    console.log(`  Copied: ${dest}`)
-  }
-
-  // Step 11: Update template.json
-  state = addModuleToState(state, moduleName, manifest.version, manifest.files)
+  // Steps 10-17: install the module through the shared composition path
+  // (copy files, record template.json, compose backend services/migrations/
+  // secrets/cors, regenerate the web module loader, merge env vars, apply
+  // workspace + package-dep changes). setup-app.ts composes profile modules
+  // through this same path, so per-request and generate-time results match.
+  const result = installModule({
+    projectRoot: PROJECT_ROOT,
+    adapterRoot: MODULES_ROOT,
+    moduleName,
+    manifest,
+    state,
+  })
+  state = result.state
   saveTemplateJson(PROJECT_ROOT, state)
+  for (const f of result.filesCopied) console.log(`  Copied: ${f}`)
   console.log('  Updated template.json')
-
-  // Step 11b: Compose Encore services (copy service dirs, merge migrations/secrets/cors)
-  const moduleDir = path.join(MODULES_ROOT, 'modules', moduleName)
-  const apiDir = path.join(PROJECT_ROOT, 'apps', 'api')
-  if (
-    manifest.services.length > 0 ||
-    manifest.migrations.length > 0 ||
-    manifest.secrets.length > 0 ||
-    manifest.corsEntries.length > 0
-  ) {
-    const { migrationsAdded, secretsAdded } = composeModule({ moduleDir, manifest, apiDir })
-    if (manifest.services.length > 0) console.log(`  Composed services: ${manifest.services.join(', ')}`)
-    if (migrationsAdded.length > 0) console.log(`  Added migrations: ${migrationsAdded.join(', ')}`)
-    if (secretsAdded.length > 0) console.log(`  Added secret bindings: ${secretsAdded.join(', ')}`)
-    if (manifest.corsEntries.length > 0) console.log('  Merged CORS entries into encore.app')
-
-    // Record the exact renumbered migration filenames so a later remove deletes
-    // precisely these files (and not a sibling module's collision-tail file).
-    state.modules[moduleName].composedMigrations = migrationsAdded
-    saveTemplateJson(PROJECT_ROOT, state)
-  }
-
-  // Step 14: Regenerate web modules.ts
-  const webModulesContent = generateWebModulesTs(PROJECT_ROOT, state)
-  const webModulesPath = path.join(PROJECT_ROOT, 'apps/web/src/modules.ts')
-  if (webModulesContent) {
-    fs.writeFileSync(webModulesPath, webModulesContent, 'utf-8')
-    console.log('  Regenerated apps/web/src/modules.ts')
-  }
-
-  // Step 15: Merge env vars
-  if (Object.keys(manifest.envVars).length > 0) {
-    const { added, skipped } = mergeEnvVars(PROJECT_ROOT, manifest)
-    if (added.length > 0) console.log(`  Added env vars: ${added.join(', ')}`)
-    if (skipped.length > 0) console.log(`  Skipped existing env vars: ${skipped.join(', ')}`)
-  }
-
-  // Step 16: Apply workspace changes
-  if (manifest.workspaceChanges) {
-    applyWorkspaces(manifest.workspaceChanges)
-    console.log('  Updated root package.json workspaces')
-  }
-
-  // Step 17: Add package deps
-  if (Object.keys(manifest.packageDeps).length > 0) {
-    addPackageDeps(manifest.packageDeps)
-    console.log('  Added package dependencies')
-  }
+  if (manifest.services.length > 0) console.log(`  Composed services: ${manifest.services.join(', ')}`)
+  if (result.migrationsAdded.length > 0) console.log(`  Added migrations: ${result.migrationsAdded.join(', ')}`)
+  if (result.secretsAdded.length > 0) console.log(`  Added secret bindings: ${result.secretsAdded.join(', ')}`)
+  if (manifest.corsEntries.length > 0) console.log('  Merged CORS entries into encore.app')
+  if (result.webModulesRegenerated) console.log('  Regenerated apps/web/src/modules.ts')
+  if (result.envAdded.length > 0) console.log(`  Added env vars: ${result.envAdded.join(', ')}`)
+  if (manifest.workspaceChanges) console.log('  Updated root package.json workspaces')
+  if (Object.keys(manifest.packageDeps).length > 0) console.log('  Added package dependencies')
 
   // Step 18: npm install + build
   if (options.noInstall) {

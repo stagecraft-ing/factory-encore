@@ -1,5 +1,5 @@
 ---
-id: "007-module-manifest-schema"
+id: "001-module-manifest-schema"
 title: "Module manifest schema: declarative service composition and the module taxonomy"
 status: approved
 created: "2026-06-10"
@@ -8,9 +8,9 @@ kind: architecture
 domain: generator
 risk: medium
 implementation: complete
-# 001-encore-app-architecture (the base app whose service tree this composes
-# into) lives in template-encore and is pinned here via the lockstep
-# (031-factory-schema-lockstep), not as an in-corpus spec dependency.
+# The base app whose service tree this composes into (the `encore-app-architecture`
+# invariant) lives in template-encore and is pinned here via the lockstep
+# (006-factory-schema-lockstep), not as an in-corpus spec dependency.
 depends_on: []
 code_aliases: ["MODULE_MANIFEST_SCHEMA", "MODULE_TAXONOMY"]
 summary: >
@@ -29,7 +29,7 @@ establishes:
   - "adapters/acme-vue-encore/modules/data-redis/"
 ---
 
-# 007 — Module manifest schema: declarative service composition and the module taxonomy
+# 001. Module manifest schema: declarative service composition and the module taxonomy
 
 ## 1. Purpose
 
@@ -50,7 +50,7 @@ This spec owns the manifest schema type definition and the modules-ts
 generator, plus the four cross-cutting modules whose composition is purely
 declarative. Service modules (those that also ship an Encore service
 directory under `files/`) are owned by the spec that governs that service's
-domain (e.g., spec 009 owns `modules/user-management/`).
+domain (e.g., spec 003 owns `modules/user-management/`).
 
 ## 3. Behavior
 
@@ -85,7 +85,7 @@ Optional fields that MUST be supported:
 #### FR-002 — Encore service-composition fields
 
 Every `manifest.json` MAY include the following service-composition fields,
-consumed by the generator's compose step (spec 008):
+consumed by the generator's compose step (spec 002):
 
 | Field | Type | Semantics |
 |-------|------|-----------|
@@ -174,9 +174,9 @@ and the four cross-cutting module directories owned here.
 ## 5. Out of scope
 
 - **`user-management` module implementation**: the schema defines its
-  contract; the module itself is owned by spec 009.
+  contract; the module itself is owned by spec 003.
 - **Generator compose/decompose logic** (how composition fields are applied
-  to a destination app): owned by spec 008.
+  to a destination app): owned by spec 002.
 - **Vue SPA source and the web-nav runtime model**: `generateWebModulesTs`
   is retained here but the Vue nav component and store are outside this
   spec's territory.

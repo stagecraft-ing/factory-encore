@@ -1,14 +1,16 @@
-# Spec: 031-factory-schema-lockstep
+# Spec: 006-factory-schema-lockstep
 #
 # Cross-repo lockstep gate. The generator clones the template-encore lean
 # baseline, so it must not drift from that baseline's core-service / module
-# shape, nor (once pinned) from its frozen app invariants (001 architecture,
-# 002 security/data). This gate fetches the baseline at the pinned ref from the
+# shape, nor (once pinned) from its frozen app invariants (the
+# `encore-app-architecture` and `security-data-invariants` invariants). This gate
+# fetches the baseline at the pinned ref from the
 # committed lockfile and runs the checker. It is fail-visible, never
-# skipped-green: a fetch failure or any drift fails the job. The 001/002
-# invariant-hash pin is DEFERRED to the Phase 3 handshake (the checker emits a
-# visible notice per deferred spec); structure + catalog binding are enforced
-# now. Both repos are public, so no token is required.
+# skipped-green: a fetch failure or any drift fails the job. The invariant-hash
+# pin is ACTIVE (status: pinned, since the Phase 3 handshake): the checker
+# re-hashes each invariant spec.md at the pinned ref and fails on any mismatch;
+# baseline structure and catalog binding are enforced too. Both repos are
+# public, so no token is required.
 
 name: ci-lockstep
 

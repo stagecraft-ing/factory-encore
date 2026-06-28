@@ -31,7 +31,8 @@
     "spec-spine": "0.8.0",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "yaml": "^2.9.0"
   },
   "spec-spine": {
     "spec": "000-factory-kernel"

@@ -1,5 +1,5 @@
 ---
-id: "008-encore-generator-core"
+id: "002-encore-generator-core"
 title: "Encore generator core: copy-base + select-driver + merge-config"
 status: approved
 created: "2026-06-10"
@@ -8,11 +8,11 @@ kind: architecture
 domain: generator
 risk: medium
 implementation: complete
-# 001-encore-app-architecture / 003-multi-driver-auth-service /
-# 005-spa-static-serving describe the base app this generator clones; they
-# live in template-encore and are pinned here via the lockstep
-# (031-factory-schema-lockstep). Only the in-corpus dependency is kept.
-depends_on: ["007-module-manifest-schema"]
+# The `encore-app-architecture`, `multi-driver-auth-service`, and
+# `spa-static-serving` invariants describe the base app this generator clones;
+# they live in template-encore and are pinned here via the lockstep
+# (006-factory-schema-lockstep). Only the in-corpus dependency is kept.
+depends_on: ["001-module-manifest-schema"]
 code_aliases: ["ENCORE_GENERATOR_CORE"]
 summary: >
   The app generator: setup-app.ts scaffolds a new application by copying
@@ -31,7 +31,7 @@ establishes:
   - "adapters/acme-vue-encore/scripts/lib/born-with.ts"
 ---
 
-# 008 — Encore generator core: copy-base + select-driver + merge-config
+# 002. Encore generator core: copy-base + select-driver + merge-config
 
 ## 1. Purpose
 
@@ -52,9 +52,10 @@ engine for all three.
 ## 2. Territory
 
 This spec owns the five generator files listed in `establishes`. The module
-manifests consumed by the generator are owned by spec 007. The base Encore
-app being copied is owned by spec 001. Auth drivers are owned by spec 003.
-The dual-app generator that runs `setup-app` twice is owned by spec 010.
+manifests consumed by the generator are owned by spec 001. The base Encore
+app being copied is owned by the `encore-app-architecture` spec. Auth drivers
+are owned by the `multi-driver-auth-service` spec. The dual-app generator that
+runs `setup-app` twice is owned by spec 004.
 
 ## 3. Behavior
 
@@ -83,7 +84,8 @@ generator tooling present.
 Auth-driver selection MUST be configuration only. A profile sets
 `AUTH_DRIVER` in the destination `apps/api/.env.example` and ensures the
 matching `secret()` bindings are present in `apps/api/infra.config.json`.
-Both drivers (`mock`, `rauthy`) ship in-app (spec 003) and coexist; the
+Both drivers (`mock`, `rauthy`) ship in-app (the `multi-driver-auth-service`
+spec) and coexist; the
 active driver is determined by the `AUTH_DRIVER` environment variable at
 runtime, not by which files are present. No driver files are copied or
 deleted during generation.
@@ -96,7 +98,7 @@ deleted during generation.
 | `public` | `rauthy` | `RAUTHY_*` | External-facing application |
 | `internal` | `rauthy` | `RAUTHY_*` (+ `GATEWAY_OAUTH_*` when BFF is included) | Staff-facing application |
 
-`SQLDatabase("app")` (the `db` service, spec 001) is always present in
+`SQLDatabase("app")` (the `db` service, the `encore-app-architecture` spec) is always present in
 every profile. Redis is optional, rate-limit backing only (`REDIS_URL`).
 There is no session-store axis.
 
@@ -112,7 +114,7 @@ the application.
 After composition, `setup-app` MUST invoke `encore gen client` (and
 optionally `--lang=openapi`) against the destination app when the Encore
 CLI is available in the environment. When the CLI is not present, the
-committed typed client reference (spec 006) is left in place with a log
+committed typed-client reference (born-with template-encore) is left in place with a log
 note.
 
 ### 3.2 `encore-composer.ts` — the composition engine
@@ -122,7 +124,7 @@ note.
 
 #### FR-006 — Service directory copy
 
-For each name in `services[]` (spec 007 schema), `composeModule` MUST copy
+For each name in `services[]` (spec 001 schema), `composeModule` MUST copy
 `modules/<module>/files/<service>/` to `apps/api/<service>/` in the
 destination. Encore discovers the service at compile time; no loader is
 generated or updated.
@@ -180,7 +182,7 @@ destination. `decomposeModule` reverses both.
 
 `env-merger.ts` manages non-secret environment variables in
 `apps/api/.env.example`. It MUST support append and comment operations
-over `envVars[]` entries from the manifest schema (spec 007). It MUST NOT
+over `envVars[]` entries from the manifest schema (spec 001). It MUST NOT
 read or write `apps/api/infra.config.json` (the secret-binding I/O is
 exclusively the composer's, per FR-008).
 
@@ -249,10 +251,10 @@ all three `setup-app` profiles, and the incremental `add-module` /
 
 ## 5. Out of scope
 
-- **Dual-app generation** (`setup-dual-app.ts`): owned by spec 010, which
+- **Dual-app generation** (`setup-dual-app.ts`): owned by spec 004, which
   invokes the `setup-app` core twice.
 - **`user-management` module contents**: the module's service directory and
-  manifest are owned by spec 009; this spec owns the engine that installs
+  manifest are owned by spec 003; this spec owns the engine that installs
   it.
 - **Frontend SPA nav composition** (`generateWebModulesTs`, Vue nav
   registration): unaffected by the backend's compile-time model; the Vue

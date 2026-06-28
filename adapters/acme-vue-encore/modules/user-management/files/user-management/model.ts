@@ -1,9 +1,9 @@
 /**
- * User-management data-access layer (spec 009).
+ * User-management data-access layer (spec 003).
  *
  * Tagged-template queries only (INV-2): interpolated ${…} values are
  * auto-parameterized, never string-concatenated. Queries run against the
- * single shared SQLDatabase("app") (spec 001), importing `db` from ../db/db.
+ * single shared SQLDatabase("app") (the `encore-app-architecture` base), importing `db` from ../db/db.
  */
 
 import { db } from "../db/db";
@@ -59,32 +59,32 @@ export async function listUsers(
   if (search && search.trim() !== "") {
     const like = `%${search.trim()}%`;
     rows = await db.queryAll<UserWithRoles>`
-      SELECT u.pk_user_account, u.user_email_address, u.user_display_name,
+      SELECT u.id AS pk_user_account, u.email AS user_email_address, u.name AS user_display_name,
              u.user_roles, u.is_active, u.last_login_at, u.created_at,
              COALESCE(ARRAY_AGG(ar.role_name) FILTER (WHERE ar.role_name IS NOT NULL), '{}') AS app_role_names
         FROM user_account u
-        LEFT JOIN user_role ur ON ur.fk_user_account = u.pk_user_account
+        LEFT JOIN user_role ur ON ur.fk_user_account = u.id
         LEFT JOIN app_role ar ON ar.pk_app_role = ur.fk_app_role
-       WHERE u.user_display_name ILIKE ${like} OR u.user_email_address ILIKE ${like}
-       GROUP BY u.pk_user_account
-       ORDER BY u.user_display_name ASC
+       WHERE u.name ILIKE ${like} OR u.email ILIKE ${like}
+       GROUP BY u.id
+       ORDER BY u.name ASC
        LIMIT ${limit} OFFSET ${offset}
     `;
     const countRow = await db.queryRow<{ count: number }>`
       SELECT COUNT(*)::int AS count FROM user_account u
-       WHERE u.user_display_name ILIKE ${like} OR u.user_email_address ILIKE ${like}
+       WHERE u.name ILIKE ${like} OR u.email ILIKE ${like}
     `;
     total = countRow?.count ?? 0;
   } else {
     rows = await db.queryAll<UserWithRoles>`
-      SELECT u.pk_user_account, u.user_email_address, u.user_display_name,
+      SELECT u.id AS pk_user_account, u.email AS user_email_address, u.name AS user_display_name,
              u.user_roles, u.is_active, u.last_login_at, u.created_at,
              COALESCE(ARRAY_AGG(ar.role_name) FILTER (WHERE ar.role_name IS NOT NULL), '{}') AS app_role_names
         FROM user_account u
-        LEFT JOIN user_role ur ON ur.fk_user_account = u.pk_user_account
+        LEFT JOIN user_role ur ON ur.fk_user_account = u.id
         LEFT JOIN app_role ar ON ar.pk_app_role = ur.fk_app_role
-       GROUP BY u.pk_user_account
-       ORDER BY u.user_display_name ASC
+       GROUP BY u.id
+       ORDER BY u.name ASC
        LIMIT ${limit} OFFSET ${offset}
     `;
     const countRow = await db.queryRow<{ count: number }>`
@@ -99,14 +99,14 @@ export async function listUsers(
 /** Fetch one user (by user_account pk) with aggregated app role names. */
 export async function getUserById(id: string): Promise<UserWithRoles | null> {
   const row = await db.queryRow<UserWithRoles>`
-    SELECT u.pk_user_account, u.user_email_address, u.user_display_name,
+    SELECT u.id AS pk_user_account, u.email AS user_email_address, u.name AS user_display_name,
            u.user_roles, u.is_active, u.last_login_at, u.created_at,
            COALESCE(ARRAY_AGG(ar.role_name) FILTER (WHERE ar.role_name IS NOT NULL), '{}') AS app_role_names
       FROM user_account u
-      LEFT JOIN user_role ur ON ur.fk_user_account = u.pk_user_account
+      LEFT JOIN user_role ur ON ur.fk_user_account = u.id
       LEFT JOIN app_role ar ON ar.pk_app_role = ur.fk_app_role
-     WHERE u.pk_user_account = ${id}
-     GROUP BY u.pk_user_account
+     WHERE u.id = ${id}
+     GROUP BY u.id
   `;
   return row ?? null;
 }
@@ -118,7 +118,7 @@ export async function setUserActive(
 ): Promise<UserWithRoles | null> {
   await db.exec`
     UPDATE user_account SET is_active = ${isActive}, updated_at = now()
-     WHERE pk_user_account = ${id}
+     WHERE id = ${id}
   `;
   return getUserById(id);
 }

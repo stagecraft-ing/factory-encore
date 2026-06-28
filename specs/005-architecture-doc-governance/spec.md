@@ -1,5 +1,5 @@
 ---
-id: "020-architecture-doc-governance"
+id: "005-architecture-doc-governance"
 title: "Architecture documentation governance: human docs as derived views of the owning specs"
 status: approved
 created: "2026-06-10"
@@ -8,10 +8,10 @@ kind: governance
 domain: docs
 risk: low
 implementation: complete
-# 001-encore-app-architecture lives in template-encore and is pinned here via
-# the lockstep (031-factory-schema-lockstep). Only the in-corpus dependency is
+# encore-app-architecture lives in template-encore and is pinned here via
+# the lockstep (006-factory-schema-lockstep). Only the in-corpus dependency is
 # kept.
-depends_on: ["008-encore-generator-core"]
+depends_on: ["002-encore-generator-core"]
 code_aliases: ["DOC_GOVERNANCE"]
 summary: >
   Human-facing architecture documentation is a derived view of the owning
@@ -32,7 +32,7 @@ references:
   - { unit: { kind: file, path: "docs/" }, role: "governed editorially; mechanically exempt via the gate's bypass floor" }
 ---
 
-# 020 — Architecture documentation governance: human docs as derived views of the owning specs
+# 005. Architecture documentation governance: human docs as derived views of the owning specs
 
 ## 1. Purpose
 
@@ -62,10 +62,10 @@ spec is a review-blocking defect adjudicated by human reviewers.
 ### 3.1 Mechanically coupled surfaces
 
 **FR-01**: `CODEMAP.md` MUST be kept current with the Encore service
-decomposition defined by spec `001-encore-app-architecture`. It MUST describe
+decomposition defined by spec `encore-app-architecture`. It MUST describe
 the six services (`lib`, `db`, `health`, `auth`, `gateway`, `web`), the
 `SQLDatabase("app")`, port 4000, and the generator script layout. Any change
-to the service layout in spec `001-encore-app-architecture` MUST be reflected
+to the service layout in spec `encore-app-architecture` MUST be reflected
 in `CODEMAP.md` in the same diff.
 
 **FR-02**: `orchestration/` contains the template orchestrator guide and the
@@ -73,12 +73,12 @@ the per-step skill bodies. These documents MUST describe the Encore compile-time
 service-composition model (copy-base + select auth driver + compose modules +
 merge config). They MUST NOT describe any runtime-registry, middleware-chain,
 or dynamic loader model. The generator pipeline described by spec
-`008-encore-generator-core` is the normative source; a change to the pipeline
+`002-encore-generator-core` is the normative source; a change to the pipeline
 MUST be reflected in the affected orchestration documents in the same diff.
 
 **FR-03**: `scripts/codemaps/` and `scripts/readmes/` contain per-profile
 generated codemaps and readme templates. They MUST reflect the current Encore
-service graph and the two-app dual model (spec `010-dual-app-generator`). A
+service graph and the two-app dual model (spec `004-dual-app-generator`). A
 change to the profile structure MUST be reflected in these directories in the
 same diff.
 
@@ -91,7 +91,7 @@ mechanical lock against silent drift.
 
 **FR-05**: Each document in `docs/` MUST name the spec(s) it derives from,
 either in a header comment or in an introductory sentence. Example: "This
-document is a derived view of spec `001-encore-app-architecture`."
+document is a derived view of spec `encore-app-architecture`."
 
 **FR-06**: A change to `docs/` that contradicts a statement in the named
 owning spec is a **review-blocking defect**. Reviewers MUST reject such a
@@ -99,26 +99,26 @@ change and request that the owning spec be updated first (if the spec is
 wrong) or that the doc change be corrected (if the doc is wrong).
 
 **FR-07**: `README.md` is editorially governed under the same contract.
-Changes to `README.md` that contradict spec `001-encore-app-architecture` or
-spec `008-encore-generator-core` are review-blocking defects.
+Changes to `README.md` that contradict spec `encore-app-architecture` or
+spec `002-encore-generator-core` are review-blocking defects.
 
 **FR-08**: The editorial governance contract applies to the following `docs/`
 documents and their owning specs:
 
 | Document | Owning spec(s) |
 |----------|----------------|
-| `docs/DEVELOPMENT.md` | `001-encore-app-architecture`, `003-multi-driver-auth-service` |
-| `docs/AUTH-SETUP.md` | `003-multi-driver-auth-service` |
-| `docs/DEPLOYMENT.md` | `011-encore-ci-cd`, `012-azure-webapp-deploy` |
-| `docs/TROUBLESHOOTING.md` | `001-encore-app-architecture`, `003-multi-driver-auth-service` |
-| `docs/TESTING.md` | `001-encore-app-architecture` |
-| `docs/TEMPLATE-USER-GUIDE.md` | `008-encore-generator-core`, `007-module-manifest-schema` |
-| `docs/MODULARIZATION-OVERVIEW.md` | `007-module-manifest-schema`, `008-encore-generator-core` |
-| `docs/MODULARIZATION-SPEC.md` | `007-module-manifest-schema` |
-| `docs/MODULE-DEVELOPMENT-GUIDE.md` | `007-module-manifest-schema`, `009-user-management-module` |
-| `docs/DUAL-APP-GUIDE.md` | `010-dual-app-generator` |
-| `docs/encore-ts/` | `001-encore-app-architecture` (provenance: these documents describe paths in the source substrate, not this template's `apps/api`; read as decision-record, not as a description of this tree) |
-| `README.md` | `001-encore-app-architecture`, `008-encore-generator-core` |
+| `docs/DEVELOPMENT.md` | `encore-app-architecture`, `multi-driver-auth-service` |
+| `docs/AUTH-SETUP.md` | `multi-driver-auth-service` |
+| `docs/DEPLOYMENT.md` | `encore-ci-cd`, `azure-webapp-deploy` |
+| `docs/TROUBLESHOOTING.md` | `encore-app-architecture`, `multi-driver-auth-service` |
+| `docs/TESTING.md` | `encore-app-architecture` |
+| `docs/TEMPLATE-USER-GUIDE.md` | `002-encore-generator-core`, `001-module-manifest-schema` |
+| `docs/MODULARIZATION-OVERVIEW.md` | `001-module-manifest-schema`, `002-encore-generator-core` |
+| `docs/MODULARIZATION-SPEC.md` | `001-module-manifest-schema` |
+| `docs/MODULE-DEVELOPMENT-GUIDE.md` | `001-module-manifest-schema`, `003-user-management-module` |
+| `docs/DUAL-APP-GUIDE.md` | `004-dual-app-generator` |
+| `docs/encore-ts/` | `encore-app-architecture` (provenance: these documents describe paths in the source substrate, not this template's `apps/api`; read as decision-record, not as a description of this tree) |
+| `README.md` | `encore-app-architecture`, `002-encore-generator-core` |
 
 ### 3.3 Coupling gate geometry
 
@@ -136,7 +136,7 @@ fact, not a limitation to be closed.
 ## 4. Acceptance criteria
 
 - **AC-1:** `CODEMAP.md` exists and describes the Encore service decomposition
-  matching spec `001-encore-app-architecture`: six services, `SQLDatabase("app")`,
+  matching spec `encore-app-architecture`: six services, `SQLDatabase("app")`,
   port 4000, and the generator script layout.
 - **AC-2:** Every file in `orchestration/` describes the Encore compile-time
   composition model. A search for runtime-session or dynamic-registry keywords
@@ -152,7 +152,7 @@ fact, not a limitation to be closed.
 ## 5. Out of scope
 
 - Governing module payload templates under `modules/**/files/` — those paths
-  are governed by their owning module specs (e.g., spec `009-user-management-module`).
+  are governed by their owning module specs (e.g., spec `003-user-management-module`).
 - Governing `standards/` documents — those are owned by the spec that
   introduces each standard.
 - Automated enforcement of the editorial contract. The FR-05 through FR-08

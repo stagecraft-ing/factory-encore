@@ -43,7 +43,7 @@ graph TD
 ```
 
 - **OAP** is the host platform. It publishes the canonical contract schemas and provides the dispatch surface. factory-encore implements the factory standard OAP defines.
-- **template-encore** is the lean baseline application. The generator clones it via `--source` and composes modules in; a cross-repo lockstep (spec 031) pins the ref and the frozen app-invariant spec hashes.
+- **template-encore** is the lean baseline application. The generator clones it via `--source` and composes modules in; a cross-repo lockstep (spec 006) pins the ref and the frozen app-invariant spec hashes.
 - **spec-spine** is the published npm governance CLI (`spec-spine@0.8.0` in devDependencies). It compiles the spec registry, lints the corpus, builds the codebase index, and runs the PR-time coupling gate.
 
 ## Key principles
