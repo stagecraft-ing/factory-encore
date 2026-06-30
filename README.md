@@ -1,4 +1,5 @@
-# factory-encore
+# [factory-encore](https://stagecraft-ing.github.io/factory-encore) [![CI](https://github.com/stagecraft-ing/factory-encore/actions/workflows/ci.yml/badge.svg)](https://github.com/stagecraft-ing/factory-encore/actions/workflows/ci.yml)
+![factory-encore](.github/img/factory-encore-github-banner.jpg)
 
 A technology-agnostic software factory framework. `factory-encore` separates the
 **process** of building software (requirements, design, specification) from the
