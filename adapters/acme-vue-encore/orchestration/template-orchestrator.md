@@ -1742,9 +1742,9 @@ After removing any Encore service: `encore check` must pass before committing.
 - Remove driver-specific env var section from `apps/api/.env.example`
 - Run `encore check` to confirm no dangling secret references
 
-**Remove the BFF gateway (if no private backend):**
-- The `gateway/` directory ships in the base app; if the feature is not needed, remove the `PRIVATE_API_BASE_URL` and `GATEWAY_OAUTH_*` secrets from `infra.config.json`
-- No files need to be deleted unless you opt to trim the `gateway` service itself from the Encore app (pending: trimming built-in services is a generator configuration option, not a manual file deletion)
+**Disable the BFF gateway (if no private backend):**
+- The `gateway/` service ships in the base app as a **core service** and is part of the baseline's security wiring, so it is not removed. Leaving `PRIVATE_API_BASE_URL` (and the `GATEWAY_OAUTH_*` secrets) unset makes the proxy inert: with no private backend configured, the gateway forwards nothing.
+- Do not delete the `gateway` service. The generator only composes services onto the baseline; it never subtracts a core service, so there is no configuration knob for removing one. A variant with no private backend simply leaves the gateway's config unset. (The manual Trim phase, Phase 5, prunes only optional composed modules and views, never core services.)
 
 **Remove an Encore service (feature module):**
 - Delete the service directory (e.g., `apps/api/user-management/`)
