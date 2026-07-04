@@ -83,7 +83,13 @@ the produced app, not here.
 per-step skill bodies. These documents MUST describe the Encore compile-time
 service-composition model (copy-base + select auth driver + compose modules +
 merge config). They MUST NOT describe any runtime-registry, middleware-chain,
-or dynamic loader model. The generator pipeline described by spec
+or dynamic loader model. Because composition is additive, they MUST NOT
+describe the generator as offering a configuration option to subtract, trim, or
+remove a **core (built-in) service**: the baseline service floor (`auth`, `db`,
+`gateway`, `health`, `lib`, `web`) is composed onto, never subtracted from. The
+manual Trim phase (skill `template-trim`) prunes only optional composed modules
+and Vue views, never core services, and the orchestration docs MUST keep that
+distinction clear. The generator pipeline described by spec
 `002-encore-generator-core` is the normative source; a change to the pipeline
 MUST be reflected in the affected orchestration documents in the same diff.
 
@@ -152,7 +158,9 @@ be closed.
   repository.)
 - **AC-2:** Every file in `orchestration/` describes the Encore compile-time
   composition model. A search for runtime-session or dynamic-registry keywords
-  across `orchestration/` returns zero matches.
+  across `orchestration/` returns zero matches, and no orchestration document
+  describes a generator option to trim, subtract, or remove a core (built-in)
+  service.
 - **AC-3:** `npx spec-spine couple --base origin/main` exits 0 when
   `orchestration/`, `scripts/codemaps/`, and `scripts/readmes/` change only in a
   diff that also touches this spec.
