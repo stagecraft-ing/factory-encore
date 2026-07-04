@@ -29,9 +29,9 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^26.0.0",
-    "spec-spine": "0.8.0",
-    "tsx": "^4.22.4",
+    "@types/node": "^26.1.0",
+    "spec-spine": "0.10.0",
+    "tsx": "^4.23.0",
     "typescript": "^6.0.3",
     "vitest": "^4.0.18",
     "yaml": "^2.9.0"
