@@ -48,7 +48,7 @@ describe('copyBaseline: born-with carry-forward', () => {
     expect(fs.existsSync(path.join(dest, 'AGENTS.md'))).toBe(true)
   })
 
-  it('carries the baseline app specs (000-bootstrap, 001, 002) but drops every factory-encore meta-spec (000-007)', () => {
+  it('carries the baseline app specs (000-bootstrap, 001, 002) but drops every factory-encore meta-spec (000-008)', () => {
     // Baseline app specs are carried; their slugs differ from the meta-spec set.
     expect(fs.existsSync(path.join(dest, 'specs', '000-bootstrap'))).toBe(true)
     expect(fs.existsSync(path.join(dest, 'specs', '001-encore-app-architecture'))).toBe(true)
@@ -61,6 +61,7 @@ describe('copyBaseline: born-with carry-forward', () => {
     expect(fs.existsSync(path.join(dest, 'specs', '005-architecture-doc-governance'))).toBe(false)
     expect(fs.existsSync(path.join(dest, 'specs', '006-factory-schema-lockstep'))).toBe(false)
     expect(fs.existsSync(path.join(dest, 'specs', '007-generator-e2e-harness'))).toBe(false)
+    expect(fs.existsSync(path.join(dest, 'specs', '008-data-redis-promotion-dual-composition'))).toBe(false)
   })
 
   it('does not carry generator artifacts (the generator, the catalog, orchestration, .derived)', () => {
