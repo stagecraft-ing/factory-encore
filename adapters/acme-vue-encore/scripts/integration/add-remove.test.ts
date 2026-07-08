@@ -373,6 +373,69 @@ describe('user-management module — Encore service composition', () => {
   })
 })
 
+// ─── Real cron scheduler Encore service module (spec 009) ───────────────────
+//
+// The in-app self-hosted scheduler: composing it copies the scheduler service
+// directory and merges its task_schedules migration onto the next free prefix.
+// The store extends the base app's single SQLDatabase("app") (INV-11), so it
+// declares no per-service database. (Runtime firing is proven separately by
+// `encore check` + the build lane on a composed app.)
+
+describe('cron module: Encore service composition', () => {
+  let tmpDir: string
+
+  beforeEach(() => {
+    tmpDir = createTempProjectDir()
+    makeFixtureApiDir(tmpDir) // seeds db/migrations with 1_/2_
+    // cron requires data-postgres (a declarative marker, no payload); install it
+    // first so the dependency check is satisfied (AC-6 requires: [data-postgres]).
+    copyRealModule(tmpDir, 'data-postgres')
+    copyRealModule(tmpDir, 'cron')
+    simulateAddModule(tmpDir, 'data-postgres')
+  })
+
+  afterEach(() => {
+    cleanTempDir(tmpDir)
+  })
+
+  it('composes the scheduler service directory + its migration (AC-1)', () => {
+    const state = simulateAddModule(tmpDir, 'cron')
+    expect(isModuleInstalled(state, 'cron')).toBe(true)
+
+    const apiDir = path.join(tmpDir, 'apps', 'api')
+    // The Encore service directory is copied verbatim.
+    expect(fs.existsSync(path.join(apiDir, 'scheduler', 'encore.service.ts'))).toBe(true)
+    expect(fs.existsSync(path.join(apiDir, 'scheduler', 'store.ts'))).toBe(true)
+    expect(fs.existsSync(path.join(apiDir, 'scheduler', 'api.ts'))).toBe(true)
+    expect(fs.existsSync(path.join(apiDir, 'scheduler', 'worker.ts'))).toBe(true)
+    expect(fs.existsSync(path.join(apiDir, 'scheduler', 'lock.ts'))).toBe(true)
+    // The migration is renumbered onto the next free prefix (3, after 1_/2_).
+    expect(
+      fs.existsSync(path.join(apiDir, 'db', 'migrations', '3_create_task_schedules.up.sql')),
+    ).toBe(true)
+    expect(state.modules['cron'].composedMigrations).toEqual(['3_create_task_schedules.up.sql'])
+    // INV-11 (AC-3): the store references the shared app db, not a per-service one.
+    const store = fs.readFileSync(path.join(apiDir, 'scheduler', 'store.ts'), 'utf-8')
+    expect(store).toContain('SQLDatabase.named("app")')
+    expect(store).not.toContain('new SQLDatabase(')
+  })
+
+  it('fully decomposes on removal (service dir + migration gone, base intact) (AC-2)', () => {
+    simulateAddModule(tmpDir, 'cron')
+    const state = simulateRemoveModule(tmpDir, 'cron')
+
+    const apiDir = path.join(tmpDir, 'apps', 'api')
+    expect(isModuleInstalled(state, 'cron')).toBe(false)
+    expect(fs.existsSync(path.join(apiDir, 'scheduler'))).toBe(false)
+    expect(
+      fs.existsSync(path.join(apiDir, 'db', 'migrations', '3_create_task_schedules.up.sql')),
+    ).toBe(false)
+    // Base migrations untouched.
+    expect(fs.existsSync(path.join(apiDir, 'db', 'migrations', '1_init.up.sql'))).toBe(true)
+    expect(fs.existsSync(path.join(apiDir, 'db', 'migrations', '2_users.up.sql'))).toBe(true)
+  })
+})
+
 describe('remove-module workflow', () => {
   let tmpDir: string
 
