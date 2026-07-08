@@ -25,6 +25,7 @@
     ],
     "modules": [
       "api-gateway",
+      "cron",
       "data-postgres",
       "data-redis",
       "security-core",

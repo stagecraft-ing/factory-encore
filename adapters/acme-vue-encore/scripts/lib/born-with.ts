@@ -45,7 +45,7 @@ export const GENERATOR_ARTIFACT_TOP_LEVEL: ReadonlySet<string> = new Set([
 // does not contain. A produced app carries the baseline's own product/app specs
 // under specs/ (template-encore's slugs, e.g. `001-encore-app-architecture`,
 // `000-bootstrap`) which differ from these, so this set never drops a carried
-// app spec. It is kept in lockstep with specs/ in this repository (000-008); a
+// app spec. It is kept in lockstep with specs/ in this repository (000-009); a
 // new meta-spec MUST be added here (guarded by setup-app.test.ts).
 export const GENERATOR_META_SPEC_IDS: ReadonlySet<string> = new Set([
   '000-factory-kernel',
@@ -57,6 +57,7 @@ export const GENERATOR_META_SPEC_IDS: ReadonlySet<string> = new Set([
   '006-factory-schema-lockstep',
   '007-generator-e2e-harness',
   '008-data-redis-promotion-dual-composition',
+  '009-tenant-cron-scheduler-module',
 ])
 
 // The born-with kernel: the governance substrate every produced app ships
