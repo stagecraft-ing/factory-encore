@@ -98,14 +98,16 @@ export function installModule(input: InstallModuleInput): InstallModuleResult {
   // 2. Record the module + its file ownership in template.json state.
   let state = addModuleToState(input.state, moduleName, manifest.version, manifest.files)
 
-  // 3. Compose the backend (Encore services, migrations, secrets, CORS).
+  // 3. Compose the backend (Encore services, migrations, secrets, CORS, and
+  //    infra.config resource blocks such as the data-redis `redis` block).
   let migrationsAdded: string[] = []
   let secretsAdded: string[] = []
   if (
     manifest.services.length > 0 ||
     manifest.migrations.length > 0 ||
     manifest.secrets.length > 0 ||
-    manifest.corsEntries.length > 0
+    manifest.corsEntries.length > 0 ||
+    manifest.infraResources.redis !== undefined
   ) {
     const moduleDir = path.join(adapterRoot, 'modules', moduleName)
     const apiDir = path.join(projectRoot, 'apps', 'api')

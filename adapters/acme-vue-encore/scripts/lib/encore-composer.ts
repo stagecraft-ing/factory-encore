@@ -141,6 +141,51 @@ export function removeSecrets(
 }
 
 /**
+ * A single Encore `infra.config.json` `redis` cluster block. Topology-only,
+ * reached over the typed REDIS_HOST / REDIS_USER / REDIS_PASSWORD connection
+ * (spec 008 FR-001, template-encore spec 018). Encore accepts it without a
+ * `CacheCluster` in code.
+ */
+export interface RedisCluster {
+  host: string
+  key_prefix?: string
+  auth: { type: 'acl'; username: string; password: SecretBinding }
+}
+
+/**
+ * Returns a new redis map with the module's cluster added, reached over the
+ * typed connection triple. Idempotent: never overwrites an existing cluster of
+ * the same name.
+ */
+export function mergeRedis(
+  current: Record<string, RedisCluster>,
+  resource: { cluster: string; keyPrefix?: string },
+): Record<string, RedisCluster> {
+  const next: Record<string, RedisCluster> = { ...current }
+  if (!(resource.cluster in next)) {
+    next[resource.cluster] = {
+      host: '${REDIS_HOST}',
+      ...(resource.keyPrefix ? { key_prefix: resource.keyPrefix } : {}),
+      auth: { type: 'acl', username: '${REDIS_USER}', password: { $env: 'REDIS_PASSWORD' } },
+    }
+  }
+  return next
+}
+
+/** Returns a new redis map with the given cluster names removed. */
+export function removeRedis(
+  current: Record<string, RedisCluster>,
+  clusters: string[],
+): Record<string, RedisCluster> {
+  const drop = new Set(clusters)
+  const next: Record<string, RedisCluster> = {}
+  for (const [key, value] of Object.entries(current)) {
+    if (!drop.has(key)) next[key] = value
+  }
+  return next
+}
+
+/**
  * Returns a new global_cors with each entry's values appended to the matching
  * field (deduplicated, order-preserving). Creates the field array if absent.
  */
@@ -206,6 +251,7 @@ export function copyServiceDir(srcDir: string, destDir: string): void {
 
 interface InfraConfig {
   secrets?: Record<string, SecretBinding>
+  redis?: Record<string, RedisCluster>
   [key: string]: unknown
 }
 
@@ -283,6 +329,7 @@ export interface ComposeResult {
  *     the next free prefix
  *   - merges `secrets[]` into <apiDir>/infra.config.json
  *   - merges `corsEntries[]` into <apiDir>/encore.app global_cors
+ *   - adds an `infraResources.redis` block to <apiDir>/infra.config.json
  *
  * Each section is skipped gracefully when empty.
  */
@@ -345,6 +392,17 @@ export function composeModule(opts: {
     }
   }
 
+  // 5. Redis resource block in infra.config.json (topology-only; spec 008 / 018)
+  const redisResource = manifest.infraResources?.redis
+  if (redisResource) {
+    const infraPath = path.join(apiDir, 'infra.config.json')
+    if (fs.existsSync(infraPath)) {
+      const infra = readJsonFile<InfraConfig>(infraPath)
+      infra.redis = mergeRedis(infra.redis ?? {}, redisResource)
+      writeJsonFile(infraPath, infra)
+    }
+  }
+
   return { migrationsAdded, secretsAdded }
 }
 
@@ -354,6 +412,7 @@ export function composeModule(opts: {
  *   - removes exactly the migration files this module composed (by name)
  *   - removes the module's secret bindings from infra.config.json
  *   - removes the module's CORS values from encore.app global_cors
+ *   - removes the module's `infraResources.redis` block from infra.config.json
  *
  * Migration removal deletes precisely the renumbered filenames recorded in
  * `composedMigrations` (captured from composeModule's `migrationsAdded`). When
@@ -420,6 +479,20 @@ export function decomposeModule(opts: {
       const next = removeCors(readEncoreAppCors(appPath), manifest.corsEntries)
       const touched = new Set(manifest.corsEntries.map((e) => e.field))
       writeEncoreAppCorsFields(appPath, next, touched)
+    }
+  }
+
+  // 5. Redis resource block in infra.config.json (spec 008 / 018)
+  const redisResource = manifest.infraResources?.redis
+  if (redisResource) {
+    const infraPath = path.join(apiDir, 'infra.config.json')
+    if (fs.existsSync(infraPath)) {
+      const infra = readJsonFile<InfraConfig>(infraPath)
+      if (infra.redis) {
+        infra.redis = removeRedis(infra.redis, [redisResource.cluster])
+        if (Object.keys(infra.redis).length === 0) delete infra.redis
+        writeJsonFile(infraPath, infra)
+      }
     }
   }
 }

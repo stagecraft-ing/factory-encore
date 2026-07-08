@@ -7,7 +7,7 @@ owner: bart
 kind: feature
 domain: generator
 risk: medium
-implementation: pending  # Design spec. The only in-PR code change is this spec's own meta-spec self-registration in born-with.ts (extends 002, additive), analogous to how OAP design specs add their featuregraph golden node. The adapter-side surfaces it governs are listed under references and are promoted to authoritative relationships (refines 001 / extends 004, plus template-encore changes pinned via lockstep 006) by the follow-on implementation PRs. Keep draft until implemented.
+implementation: pending  # FR-001 (data-redis promotion) is implemented: the manifest gains an infraResources.redis field, the composer emits/removes a topology-only infra.config redis block reached over the typed REDIS_HOST/REDIS_USER/REDIS_PASSWORD triple, data-redis is a real resource (honest description), and the cron large-scale lock migrates onto that contract (refines 001/002/009). The template-encore baseline client + pinnedRef bump land via lockstep 006. Stays pending because FR-002 (CORS wire-or-drop) and FR-003 (dual module composition) remain a follow-on slice (still under references). Flips to complete when those land.
 depends_on:
   - "001-module-manifest-schema"      # owns the modules/ directories (data-redis/, security-core/) this spec promotes and corrects
   - "002-encore-generator-core"       # owns setup-app.ts + the generated apps/api/infra.config.json this spec adds a redis block to
@@ -47,14 +47,31 @@ extends:
   - spec: "002-encore-generator-core"
     nature: additive
     unit: { kind: file, path: adapters/acme-vue-encore/scripts/lib/born-with.ts }
+refines:
+  # FR-001 (data-redis promotion) landed here. The design references below are
+  # promoted to authoritative refines edges for exactly the paths this PR
+  # changes; FR-002 (CORS) and FR-003 (dual composition) stay under references
+  # (a follow-on slice), so implementation: stays pending.
+  - aspect: "optional infra.config redis resource: manifest schema field plus data-redis promoted from inert marker to a real resource"
+    refines_specs: ["001-module-manifest-schema"]
+    paths:
+      - adapters/acme-vue-encore/scripts/lib/manifest.schema.ts
+      - adapters/acme-vue-encore/modules/data-redis/manifest.json
+  - aspect: "composer emits and removes the infra.config redis block (topology-only); the generate-path install fires it for an infra-resource-only module"
+    refines_specs: ["002-encore-generator-core"]
+    paths:
+      - adapters/acme-vue-encore/scripts/lib/encore-composer.ts
+      - adapters/acme-vue-encore/scripts/lib/install-module.ts
+  - aspect: "cron large-scale lock migrated onto the typed REDIS_HOST/REDIS_USER/REDIS_PASSWORD contract (no REDIS_URL)"
+    refines_specs: ["009-tenant-cron-scheduler-module"]
+    paths:
+      - adapters/acme-vue-encore/modules/cron/files/scheduler/lock.ts
+      - adapters/acme-vue-encore/modules/cron/manifest.json
+      - adapters/acme-vue-encore/modules/cron/files/scheduler/worker.ts
 references:
-  # Non-authoritative pointers to the surfaces implementation PRs will change.
-  # Not claimed via refines/extends here because no code changes in this design
-  # PR; claiming them would over-fire the coupling gate. Implementation PRs
-  # promote them: refines 001 (module surfaces), extends 004 (dual generator),
-  # and the template-encore baseline edits pinned through lockstep 006.
-  - role: data-redis-module
-    unit: { kind: file, path: adapters/acme-vue-encore/modules/data-redis/manifest.json }
+  # Remaining non-authoritative pointers (FR-002 CORS, FR-003 dual composition),
+  # promoted by the follow-on slice: extends 004 (dual generator) and the CORS
+  # wiring on security-core / manifest.yaml.
   - role: security-core-module
     unit: { kind: file, path: adapters/acme-vue-encore/modules/security-core/manifest.json }
   - role: dual-generator

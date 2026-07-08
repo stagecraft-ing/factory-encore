@@ -27,9 +27,9 @@ export function stopDaemon(): void {
 export async function processDueTasks(): Promise<void> {
   try {
     for await (const task of dueSchedules()) {
-      // The tier lock (Postgres atomic claim, or Redis when REDIS_URL is set)
-      // guarantees a single replica fires this job for this window. The TTL
-      // spans the fire-and-advance window across replicas.
+      // The tier lock (Postgres atomic claim, or Redis when the data-redis
+      // resource is provisioned) guarantees a single replica fires this job for
+      // this window. The TTL spans the fire-and-advance window across replicas.
       const acquired = await tryAcquire(task.id, POLL_INTERVAL_MS * 2);
       if (!acquired) continue;
 

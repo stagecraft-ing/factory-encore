@@ -13,6 +13,18 @@
         "source": "spec-edge"
       },
       {
+        "path": "adapters/acme-vue-encore/modules/cron/files/scheduler/lock.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/modules/cron/files/scheduler/worker.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/modules/cron/manifest.json",
+        "source": "spec-edge"
+      },
+      {
         "path": "adapters/acme-vue-encore/modules/data-redis/manifest.json",
         "source": "spec-edge"
       },
@@ -22,6 +34,18 @@
       },
       {
         "path": "adapters/acme-vue-encore/scripts/lib/born-with.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/lib/encore-composer.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/lib/install-module.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/lib/manifest.schema.ts",
         "source": "spec-edge"
       },
       {
@@ -46,14 +70,40 @@
       {
         "locations": [
           {
-            "file": "adapters/acme-vue-encore/manifest.yaml"
+            "file": "adapters/acme-vue-encore/modules/cron/files/scheduler/lock.ts"
           }
         ],
-        "ownership": false,
-        "sourceField": "references",
+        "ownership": true,
+        "sourceField": "refines",
         "unit": {
           "kind": "file",
-          "path": "adapters/acme-vue-encore/manifest.yaml"
+          "path": "adapters/acme-vue-encore/modules/cron/files/scheduler/lock.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/modules/cron/files/scheduler/worker.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "refines",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/modules/cron/files/scheduler/worker.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/modules/cron/manifest.json"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "refines",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/modules/cron/manifest.json"
         }
       },
       {
@@ -62,11 +112,63 @@
             "file": "adapters/acme-vue-encore/modules/data-redis/manifest.json"
           }
         ],
+        "ownership": true,
+        "sourceField": "refines",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/modules/data-redis/manifest.json"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/lib/encore-composer.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "refines",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/encore-composer.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/lib/install-module.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "refines",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/install-module.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/lib/manifest.schema.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "refines",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/manifest.schema.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/manifest.yaml"
+          }
+        ],
         "ownership": false,
         "sourceField": "references",
         "unit": {
           "kind": "file",
-          "path": "adapters/acme-vue-encore/modules/data-redis/manifest.json"
+          "path": "adapters/acme-vue-encore/manifest.yaml"
         }
       },
       {
@@ -100,5 +202,5 @@
     "specStatus": "draft"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "387f13c4145ec19c81ec5a0e2c4ca3a2c1b251f2be1c2d10b8ee0c8bc78350b5"
+  "shardHash": "7cbc544f38dbd4846cabd13ad2a83d35a8dbb0017d86614782cb2193a13e3986"
 }

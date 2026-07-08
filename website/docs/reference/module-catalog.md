@@ -9,7 +9,7 @@ The module catalog (`adapters/acme-vue-encore/modules/`) contains composable ser
 | `security-core` | 2.0.0 | stable | Cross-cutting security configuration. Documents the CORS origin knob the base app's `encore.app` global_cors consumes. |
 | `api-gateway` | 2.0.0 | stable | BFF API gateway opt-in. Documents private-backend config knobs and contributes the frontend `/connectivity` test page. |
 | `data-postgres` | 2.0.0 | stable | Declarative marker that PostgreSQL persistence is built into the base via Encore's `SQLDatabase("app")`. |
-| `data-redis` | 2.0.0 | stable | Documents the `REDIS_URL` knob for optional rate-limit backend (not a session store). |
+| `data-redis` | 3.0.0 | stable | Optional infra: composes an Encore `infra.config.json` `redis` block reached over the typed `REDIS_HOST`/`REDIS_USER`/`REDIS_PASSWORD` connection. Not a rate-limit backend (that is Postgres) or a session store; its first consumer is the cron large-scale lock. |
 | `user-management` | 2.0.0 | stable | Application-side user + role management as an Encore service. The reference shape for feature modules. |
 
 ## Module taxonomy
@@ -23,7 +23,7 @@ These modules ship no `apps/api/src/**` payload. They are declarative markers do
 - **security-core**: CORS origin configuration (`CORS_ORIGIN` env var).
 - **api-gateway**: BFF proxy configuration (OAuth client secrets already declared by the base).
 - **data-postgres**: PostgreSQL via Encore's `SQLDatabase("app")`.
-- **data-redis**: Optional Redis for rate limiting (`REDIS_URL` env var).
+- **data-redis**: Optional Redis infrastructure. Ships no `apps/api/src/**` payload but composes an `infra.config.json` `redis` block (typed `REDIS_HOST`/`REDIS_USER`/`REDIS_PASSWORD`), consumed by the cron large-scale lock via the baseline `lib/redis` client. Not rate limiting (that is Postgres) and not a session store.
 
 ### Service modules (files + declarations)
 

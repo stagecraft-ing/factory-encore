@@ -30,13 +30,6 @@
     "owner": "bart",
     "references": [
       {
-        "role": "data-redis-module",
-        "unit": {
-          "kind": "file",
-          "path": "adapters/acme-vue-encore/modules/data-redis/manifest.json"
-        }
-      },
-      {
         "role": "security-core-module",
         "unit": {
           "kind": "file",
@@ -55,6 +48,78 @@
         "unit": {
           "kind": "file",
           "path": "adapters/acme-vue-encore/manifest.yaml"
+        }
+      }
+    ],
+    "refines": [
+      {
+        "aspect": "optional infra.config redis resource: manifest schema field plus data-redis promoted from inert marker to a real resource",
+        "refines_specs": [
+          "001-module-manifest-schema"
+        ],
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/manifest.schema.ts"
+        }
+      },
+      {
+        "aspect": "optional infra.config redis resource: manifest schema field plus data-redis promoted from inert marker to a real resource",
+        "refines_specs": [
+          "001-module-manifest-schema"
+        ],
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/modules/data-redis/manifest.json"
+        }
+      },
+      {
+        "aspect": "composer emits and removes the infra.config redis block (topology-only); the generate-path install fires it for an infra-resource-only module",
+        "refines_specs": [
+          "002-encore-generator-core"
+        ],
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/encore-composer.ts"
+        }
+      },
+      {
+        "aspect": "composer emits and removes the infra.config redis block (topology-only); the generate-path install fires it for an infra-resource-only module",
+        "refines_specs": [
+          "002-encore-generator-core"
+        ],
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/install-module.ts"
+        }
+      },
+      {
+        "aspect": "cron large-scale lock migrated onto the typed REDIS_HOST/REDIS_USER/REDIS_PASSWORD contract (no REDIS_URL)",
+        "refines_specs": [
+          "009-tenant-cron-scheduler-module"
+        ],
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/modules/cron/files/scheduler/lock.ts"
+        }
+      },
+      {
+        "aspect": "cron large-scale lock migrated onto the typed REDIS_HOST/REDIS_USER/REDIS_PASSWORD contract (no REDIS_URL)",
+        "refines_specs": [
+          "009-tenant-cron-scheduler-module"
+        ],
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/modules/cron/manifest.json"
+        }
+      },
+      {
+        "aspect": "cron large-scale lock migrated onto the typed REDIS_HOST/REDIS_USER/REDIS_PASSWORD contract (no REDIS_URL)",
+        "refines_specs": [
+          "009-tenant-cron-scheduler-module"
+        ],
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/modules/cron/files/scheduler/worker.ts"
         }
       }
     ],
@@ -78,6 +143,6 @@
     "summary": "The create-project reframe (OAP spec 227) projects the factory adapter's module surface into a derived catalog and an Encore infra.config projection. Three adapter-side surfaces must become honest for that projection to be truthful. (1) data-redis is an inert marker (files:{}, status:stable) whose description falsely claims a Redis rate-limit backend that does not exist (the baseline limiter is a Postgres UNLOGGED counter). This spec promotes it to a real Encore infra.config `redis` resource: a `redis` block in the generated apps/api/infra.config.json plus REDIS_* env bindings, coordinated with the template-encore baseline via lockstep (spec 006). This reverses the abandoned chore/data-redis-retirement direction (retire becomes promote). (2) security-core's CORS_ORIGIN env knob is inert: the baseline global_cors is hardcoded static in encore.app and no baseline code reads CORS_ORIGIN. This spec decides wire-or-drop (recommended: wire it, env-aware, so deployed public/internal apps at real domains are correct). (3) the dual topology composes no feature modules (manifest.yaml:217-218), so a dual app cannot compose user-management into its internal clone. This spec closes that gap so dual can compose modules into the internal clone, unblocking the dual community-board fixture and the \"public cannot see triage / staff-only mutations\" trust-zone test. Companion to OAP spec 227, which owns the stagecraft create-project surface and the deployd previewRedis dev-only provisioning that pairs with the promoted resource.\n",
     "title": "Honest module surfaces: data-redis promotion, dual module composition, and the CORS knob"
   },
-  "shardHash": "09d5743f43b78a3dd6bc2725b45cb7a7fdf9037bb7d05c2a7a0dadaad1e9596b",
+  "shardHash": "140bc5fb29b899568d0959ee92be2c70e426f8ec7461246869256cf13b8ae29a",
   "specVersion": "1.1.0"
 }

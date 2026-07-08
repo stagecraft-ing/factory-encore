@@ -462,7 +462,7 @@ describe('remove-module workflow', () => {
   it('comments out env vars in .env.example on removal', () => {
     simulateAddModule(tmpDir, 'data-redis')
     let content = fs.readFileSync(path.join(tmpDir, '.env.example'), 'utf-8')
-    expect(content).toContain('REDIS_URL')
+    expect(content).toContain('REDIS_HOST')
 
     simulateRemoveModule(tmpDir, 'data-redis')
     content = fs.readFileSync(path.join(tmpDir, '.env.example'), 'utf-8')
