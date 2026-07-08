@@ -23,6 +23,7 @@ function makeManifest(overrides: Partial<ModuleManifest> = {}): ModuleManifest {
     middlewares: [],
     migrations: [],
     packageDeps: {},
+    infraResources: {},
     envVars: {},
     ...overrides,
   }

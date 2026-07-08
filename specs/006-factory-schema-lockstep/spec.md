@@ -115,6 +115,16 @@ move. This is not a spec edited to justify code: the generator gains nothing it 
 not already do; the pin is advanced, with cause, so the gate re-anchors on the
 baseline the generator now clones.
 
+It then advanced from `89326a5` to `ddba5e9` (template-encore main) on 2026-07-08.
+Like the `b37d3d7 -> c7603ee` refresh, this is a **hash-identical** advance: both
+invariant spec.md hashes re-hash byte-identical at `ddba5e9`. template-encore
+spec 018 added an optional baseline Redis client (`apps/api/lib/redis.ts`) plus the
+`ioredis` dependency without touching either invariant spec, so the enforced
+content is unchanged and only the ref moves. The generator adopts this baseline so
+the `data-redis` promotion (spec 008 FR-001) can compose an `infra.config.json`
+`redis` block against a baseline that carries the typed `lib/redis` client the
+composed app (and the cron large-scale lock) imports.
+
 #### FR-004: Fail-visible, never skipped-green
 
 A missing baseline source, an unreadable pin, a missing invariant spec, or any

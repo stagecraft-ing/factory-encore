@@ -35,6 +35,28 @@ const migrationSchema = z.object({
 })
 
 /**
+ * An optional Encore `infra.config.json` `redis` resource this module composes
+ * (spec 008 FR-001, template-encore spec 018). Topology-only: the block is
+ * reached over the typed REDIS_HOST / REDIS_USER / REDIS_PASSWORD connection and
+ * needs no `CacheCluster` in code (verified against Encore v1.57.9). `cluster`
+ * is the infra.config key (default `cache`); `keyPrefix` sets an optional
+ * namespace.
+ */
+const redisResourceSchema = z.object({
+  cluster: z.string().default('cache'),
+  keyPrefix: z.string().optional(),
+})
+
+/**
+ * Encore `infra.config.json` resource blocks this module contributes. Redis is
+ * the first (spec 008); further resource types (object storage, pub/sub,
+ * metrics) extend this object once the redis promotion proves the pattern.
+ */
+const infraResourcesSchema = z.object({
+  redis: redisResourceSchema.optional(),
+})
+
+/**
  * Module manifest contract — v2 (Encore compile-time service composition).
  *
  * Spec 001 (`module-manifest-schema`). The
@@ -75,6 +97,9 @@ export const manifestSchema = z.object({
 
   packageDeps: z.record(z.string(), z.record(z.string(), z.string())).default({}),
 
+  /** Optional Encore `infra.config.json` resource blocks (redis, ...). */
+  infraResources: infraResourcesSchema.default({}),
+
   envVars: z.record(z.string(), envVarSchema).default({}),
 
   webSnippetFile: z.string().optional(),
@@ -92,3 +117,5 @@ export type EnvVarDef = z.infer<typeof envVarSchema>
 export type ModuleSecret = z.infer<typeof secretSchema>
 export type ModuleCorsEntry = z.infer<typeof corsEntrySchema>
 export type ModuleMigration = z.infer<typeof migrationSchema>
+export type ModuleRedisResource = z.infer<typeof redisResourceSchema>
+export type ModuleInfraResources = z.infer<typeof infraResourcesSchema>

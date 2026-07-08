@@ -15,6 +15,8 @@ import {
   renumberMigration,
   mergeSecrets,
   removeSecrets,
+  mergeRedis,
+  removeRedis,
   mergeCors,
   removeCors,
   composeModule,
@@ -22,6 +24,7 @@ import {
   copyServiceDir,
   type GlobalCors,
   type SecretBinding,
+  type RedisCluster,
 } from './encore-composer'
 import { parse as parseJsonc } from 'jsonc-parser'
 import { manifestSchema } from './manifest.schema'
@@ -111,6 +114,53 @@ describe('removeSecrets', () => {
     const result = removeSecrets(current, ['X'])
     expect(result).toEqual({ A: { $env: 'A' } })
     expect(current).toEqual({ A: { $env: 'A' } })
+  })
+})
+
+// ─── pure: mergeRedis / removeRedis ────────────────────────────────────────
+
+describe('mergeRedis', () => {
+  it('adds a cluster reached over the typed REDIS_HOST / REDIS_USER / REDIS_PASSWORD triple', () => {
+    const result = mergeRedis({}, { cluster: 'cache' })
+    expect(result).toEqual({
+      cache: {
+        host: '${REDIS_HOST}',
+        auth: { type: 'acl', username: '${REDIS_USER}', password: { $env: 'REDIS_PASSWORD' } },
+      },
+    })
+  })
+
+  it('includes key_prefix only when provided', () => {
+    expect(mergeRedis({}, { cluster: 'cache', keyPrefix: 'app:' }).cache.key_prefix).toBe('app:')
+    expect('key_prefix' in mergeRedis({}, { cluster: 'cache' }).cache).toBe(false)
+  })
+
+  it('is idempotent and never overwrites an existing cluster', () => {
+    const current: Record<string, RedisCluster> = {
+      cache: { host: 'custom', auth: { type: 'acl', username: 'u', password: { $env: 'P' } } },
+    }
+    const result = mergeRedis(current, { cluster: 'cache' })
+    expect(result.cache.host).toBe('custom')
+  })
+
+  it('does not mutate the input object', () => {
+    const current: Record<string, RedisCluster> = {}
+    mergeRedis(current, { cluster: 'cache' })
+    expect(current).toEqual({})
+  })
+})
+
+describe('removeRedis', () => {
+  it('removes the named clusters', () => {
+    const current = mergeRedis({}, { cluster: 'cache' })
+    expect(removeRedis(current, ['cache'])).toEqual({})
+  })
+
+  it('does not mutate the input and ignores unknown clusters', () => {
+    const current = mergeRedis({}, { cluster: 'cache' })
+    const result = removeRedis(current, ['other'])
+    expect(result).toEqual(current)
+    expect(Object.keys(current)).toEqual(['cache'])
   })
 })
 
@@ -277,6 +327,35 @@ describe('composeModule / decomposeModule (fixture round-trip)', () => {
     const infra = JSON.parse(fs.readFileSync(path.join(apiDir, 'infra.config.json'), 'utf-8'))
     expect(infra.secrets.WIDGET_API_KEY).toEqual({ $env: 'WIDGET_API_KEY' })
     expect(fs.existsSync(path.join(apiDir, 'widget'))).toBe(false)
+  })
+
+  // A marker-only data-redis-style manifest: no services/migrations/secrets/cors,
+  // just the infra.config redis resource (spec 008 FR-001).
+  function redisManifest() {
+    return manifestSchema.parse({
+      name: 'data-redis',
+      description: 'redis resource',
+      infraResources: { redis: { cluster: 'cache' } },
+    })
+  }
+
+  it('composeModule adds the redis block to infra.config.json (typed triple), leaving sql/secrets intact', () => {
+    composeModule({ moduleDir, manifest: redisManifest(), apiDir })
+    const infra = JSON.parse(fs.readFileSync(path.join(apiDir, 'infra.config.json'), 'utf-8'))
+    expect(infra.redis.cache).toEqual({
+      host: '${REDIS_HOST}',
+      auth: { type: 'acl', username: '${REDIS_USER}', password: { $env: 'REDIS_PASSWORD' } },
+    })
+    // the baseline's own secrets are untouched
+    expect(infra.secrets.JWT_PRIVATE_KEY).toEqual({ $env: 'JWT_PRIVATE_KEY' })
+  })
+
+  it('decomposeModule removes the redis block (and drops the empty redis key)', () => {
+    composeModule({ moduleDir, manifest: redisManifest(), apiDir })
+    decomposeModule({ moduleDir, manifest: redisManifest(), apiDir })
+    const infra = JSON.parse(fs.readFileSync(path.join(apiDir, 'infra.config.json'), 'utf-8'))
+    expect(infra.redis).toBeUndefined()
+    expect(infra.secrets.JWT_PRIVATE_KEY).toEqual({ $env: 'JWT_PRIVATE_KEY' })
   })
 })
 
