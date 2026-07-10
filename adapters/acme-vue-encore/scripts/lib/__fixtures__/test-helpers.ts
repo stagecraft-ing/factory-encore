@@ -228,6 +228,7 @@ function writeFile(root: string, rel: string, content: string): void {
  *                      AGENTS.md, Makefile, tools/ (governance substrate the
  *                      carried specs + CI require)
  *   app (carried):     apps/, packages/, root config, docs/ (minus dev docs),
+ *                      .github/workflows/ci-supply-chain.yml,
  *                      specs/000-bootstrap + specs/001-encore-app-architecture +
  *                      specs/002-security-data-invariants (baseline app specs)
  *   generator-artifact (skipped): scripts/, modules/, orchestration/,
@@ -235,6 +236,8 @@ function writeFile(root: string, rel: string, content: string): void {
  *                      the factory-encore meta-specs (000-factory-kernel,
  *                      002-encore-generator-core, 005-architecture-doc-governance,
  *                      006-factory-schema-lockstep, 007-generator-e2e-harness),
+ *                      specs/016-docs-website (template-dev spec governing the
+ *                      stripped website/), .github/workflows/deploy-docs.yml,
  *                      node_modules/, .git/, docs/encore-ts
  *
  * Returns the baseline root path.
@@ -278,6 +281,12 @@ export function makeBaselineFixture(): string {
   )
   writeFile(root, 'eslint.config.mjs', 'export default []\n')
 
+  // --- app: CI workflows (carried), except the docs-website deploy workflow ---
+  // ci-supply-chain is born-with the app; deploy-docs.yml is the stripped
+  // website's satellite (spec 016-docs-website) and must not ship.
+  writeFile(root, '.github/workflows/ci-supply-chain.yml', 'name: ci\non: [push]\n')
+  writeFile(root, '.github/workflows/deploy-docs.yml', 'name: Deploy docs\non: [push]\n')
+
   // --- app: docs (kept), template-dev docs (skipped) ---
   writeFile(root, 'docs/DEVELOPMENT.md', '# Development\n')
   writeFile(root, 'docs/encore-ts/ref.md', '# template-dev only\n')
@@ -304,6 +313,11 @@ export function makeBaselineFixture(): string {
   writeFile(root, 'specs/005-architecture-doc-governance/spec.md', '# 005 generator meta\n')
   writeFile(root, 'specs/006-factory-schema-lockstep/spec.md', '# 006 generator meta\n')
   writeFile(root, 'specs/007-generator-e2e-harness/spec.md', '# 007 generator meta\n')
+  // Template-encore's own template-dev-only spec (governs the stripped docs
+  // website). Seeded here to guard that TEMPLATE_DEV_SPEC_IDS drops it: carrying
+  // it would fail the produced app's own `spec-spine index check` (I-004 on the
+  // missing website/ unit it establishes).
+  writeFile(root, 'specs/016-docs-website/spec.md', '# 016 docs website (template-dev)\n')
 
   // --- generator artifacts (skipped) ---
   writeFile(root, 'scripts/setup-app.ts', "console.log('generator')\n")
