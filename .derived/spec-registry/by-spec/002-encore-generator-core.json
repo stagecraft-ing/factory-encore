@@ -81,13 +81,15 @@
       "FR-014 — `git init` skipped for machine-driven runs",
       "3.6 Why composition happens at generation time",
       "4. Acceptance criteria",
-      "5. Out of scope"
+      "5. Out of scope",
+      "Amendment (2026-07-09): drop the template website/ from produced apps",
+      "Amendment (2026-07-10): drop the docs-website's spec and deploy workflow too"
     ],
     "specPath": "specs/002-encore-generator-core/spec.md",
     "status": "approved",
     "summary": "The app generator: setup-app.ts scaffolds a new application by copying the base Encore app, selecting an auth driver by configuration, composing selected service modules (directory copy + declarative merge via encore-composer.ts, including a JSONC-aware CORS merge), merging env templates, and regenerating the typed client. add-module.ts / remove-module.ts apply the same composition incrementally. Three profiles: minimal, public, internal.\n",
     "title": "Encore generator core: copy-base + select-driver + merge-config"
   },
-  "shardHash": "1475963d82eabf764e23c93d512532cbe2dbf94566a2cb03d288267b9f74623f",
+  "shardHash": "1791594fef1697af04c3b6df9aff0c8f177c261db6bf3d83ce42919c0c2e1951",
   "specVersion": "1.1.0"
 }

@@ -308,3 +308,41 @@ and a negative assertion in `setup-app.test.ts` so the drop is exercised.
 intentionally still carried.
 
 Couples the born-with policy change to its owning spec per the coupling gate.
+
+## Amendment (2026-07-10): drop the docs-website's spec and deploy workflow too
+
+The 2026-07-09 amendment stripped `website/` but left the `specs/` corpus fully
+carried, calling that intentional. It was not complete. Template-encore's spec
+`016-docs-website` `establishes: ["website/", ".github/workflows/deploy-docs.yml"]`,
+and the born-with `specs/` drop only consulted `GENERATOR_META_SPEC_IDS`
+(factory-encore's own create-time slugs, which never match a baseline slug). So
+every produced app carried spec 016 while `website/` had just been removed. When
+stagecraft's per-request scaffold ran `spec-spine index` over the produced tree
+it emitted I-004 (`file unit 'website/' does not exist` for spec 016) and the
+fail-closed `index check` correctly rejected the scaffold, orphaning the job:
+
+```
+index is STALE ... stale shard(s): by-spec/016-docs-website (blocking diagnostics)
+```
+
+This was a genuine spec/code drift introduced by the incomplete 2026-07-09
+cleanup, not a stagecraft gate bug: the gate did its job.
+
+Fix, completing the earlier amendment:
+
+- Added `TEMPLATE_DEV_SPEC_IDS` to `born-with.ts` (currently `016-docs-website`)
+  and consulted it alongside `GENERATOR_META_SPEC_IDS` in `classifyEntry`'s
+  `specs/` branch. A produced app now carries neither the stripped `website/`
+  nor the spec that `establishes:` it.
+- Dropped the orphaned `.github/workflows/deploy-docs.yml` (spec 016's other
+  established artifact) in `setup-app.ts`'s copy walk, alongside the existing
+  `docs/encore-ts` / `docs/migration` skips. Every other `.github/workflow`
+  (ci-supply-chain, etc.) stays born-with the app.
+- Seeded `specs/016-docs-website` plus a kept/dropped `.github/workflows` pair
+  in the baseline fixture, with negative assertions in `setup-app.test.ts`.
+
+Invariant for the future: a template-dev spec that `establishes:` an artifact
+this generator strips MUST be added to `TEMPLATE_DEV_SPEC_IDS`, or the produced
+app's own `index check` will fail closed the same way.
+
+Couples the born-with policy change to its owning spec per the coupling gate.

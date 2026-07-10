@@ -64,6 +64,21 @@ export const GENERATOR_META_SPEC_IDS: ReadonlySet<string> = new Set([
   '009-tenant-cron-scheduler-module',
 ])
 
+// Template-encore's own template-dev-only specs. Unlike GENERATOR_META_SPEC_IDS
+// (factory-encore's create-time specs), these are BASELINE specs that govern
+// template-dev artifacts which are themselves stripped from a produced app. A
+// produced app must carry NEITHER the stripped artifact NOR the spec that
+// `establishes:` it: carrying the spec makes the produced app's own `spec-spine
+// index` emit I-004 for the now-missing file unit and fail `index check`.
+// `016-docs-website` establishes `website/` (dropped via
+// GENERATOR_ARTIFACT_TOP_LEVEL above) and `.github/workflows/deploy-docs.yml`
+// (dropped in setup-app.ts's copy walk), so it is dropped here too. Kept in
+// lockstep with the template-encore baseline: a new template-dev spec MUST be
+// added here (guarded by setup-app.test.ts).
+export const TEMPLATE_DEV_SPEC_IDS: ReadonlySet<string> = new Set([
+  '016-docs-website',
+])
+
 // The born-with kernel: the governance substrate every produced app ships
 // with, carried verbatim from the baseline. AGENTS.md is the vendor-neutral
 // agent guide that is part of the kernel (read by every agent), not a
@@ -101,11 +116,15 @@ export function classifyEntry(relParts: readonly string[]): CarryDecision {
   if (SKIP_ANYWHERE.has(top)) return 'generator-artifact'
   if (GENERATOR_ARTIFACT_TOP_LEVEL.has(top)) return 'generator-artifact'
 
-  // The generator meta-specs are dropped from the carried specs/ corpus; the
-  // rest of specs/ (the app-invariant and product specs) is born-with the app.
+  // The generator meta-specs AND the template-dev-only specs are dropped from
+  // the carried specs/ corpus; the rest of specs/ (the app-invariant and product
+  // specs) is born-with the app.
   if (top === 'specs') {
     const specId = relParts[1]
-    if (specId !== undefined && GENERATOR_META_SPEC_IDS.has(specId)) {
+    if (
+      specId !== undefined &&
+      (GENERATOR_META_SPEC_IDS.has(specId) || TEMPLATE_DEV_SPEC_IDS.has(specId))
+    ) {
       return 'generator-artifact'
     }
   }

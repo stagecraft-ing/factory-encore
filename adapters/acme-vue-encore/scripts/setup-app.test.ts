@@ -62,6 +62,17 @@ describe('copyBaseline: born-with carry-forward', () => {
     expect(fs.existsSync(path.join(dest, 'specs', '006-factory-schema-lockstep'))).toBe(false)
     expect(fs.existsSync(path.join(dest, 'specs', '007-generator-e2e-harness'))).toBe(false)
     expect(fs.existsSync(path.join(dest, 'specs', '008-data-redis-promotion-dual-composition'))).toBe(false)
+    // The template-encore docs-website spec is template-dev-only: it establishes
+    // the stripped website/, so carrying it would fail the produced app's own
+    // `spec-spine index check` with I-004 on the missing website/ unit.
+    expect(fs.existsSync(path.join(dest, 'specs', '016-docs-website'))).toBe(false)
+  })
+
+  it('carries .github/workflows but drops the docs-website deploy workflow', () => {
+    // ci-supply-chain is born-with the app (the carried specs + CI depend on it);
+    // deploy-docs.yml is the stripped website's satellite and must not ship.
+    expect(fs.existsSync(path.join(dest, '.github', 'workflows', 'ci-supply-chain.yml'))).toBe(true)
+    expect(fs.existsSync(path.join(dest, '.github', 'workflows', 'deploy-docs.yml'))).toBe(false)
   })
 
   it('does not carry generator artifacts (the generator, the catalog, orchestration, .derived, website)', () => {

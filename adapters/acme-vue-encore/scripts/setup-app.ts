@@ -108,6 +108,8 @@ export function resolveSource(argv: string[]): string | null {
  *   - node_modules/.git skipped at any depth; dist/build output dirs skipped at
  *     any depth except the committed apps/api/web/build placeholder
  *   - docs/encore-ts and docs/migration are template-dev docs, skipped
+ *   - .github/workflows/deploy-docs.yml is the stripped docs-website's deploy
+ *     workflow (spec 016-docs-website satellite), skipped; other workflows stay
  */
 export function copyBaseline(source: string, dest: string): void {
   fs.mkdirSync(dest, { recursive: true })
@@ -127,6 +129,14 @@ export function copyBaseline(source: string, dest: string): void {
 
       // Skip template-dev docs (development history; keep the rest of docs/).
       if (rel.length === 2 && rel[0] === 'docs' && (name === 'encore-ts' || name === 'migration')) continue
+
+      // Skip the template's docs-website deploy workflow. Spec 016-docs-website
+      // establishes both `website/` (dropped as a generator artifact) and this
+      // workflow; with the site gone and the spec dropped from carry-forward
+      // (born-with.ts TEMPLATE_DEV_SPEC_IDS), the workflow is orphaned dead
+      // weight in a produced app, so drop it too. Every other .github/workflow
+      // (ci-supply-chain, etc.) stays born-with the app.
+      if (rel.length === 3 && rel[0] === '.github' && rel[1] === 'workflows' && name === 'deploy-docs.yml') continue
 
       if (entry.isDirectory()) {
         const relPath = rel.join('/')
