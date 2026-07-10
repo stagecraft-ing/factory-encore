@@ -231,7 +231,8 @@ function writeFile(root: string, rel: string, content: string): void {
  *                      specs/000-bootstrap + specs/001-encore-app-architecture +
  *                      specs/002-security-data-invariants (baseline app specs)
  *   generator-artifact (skipped): scripts/, modules/, orchestration/,
- *                      .derived/, the factory-encore meta-specs (000-factory-kernel,
+ *                      .derived/, website/ (the template's own Docusaurus docs),
+ *                      the factory-encore meta-specs (000-factory-kernel,
  *                      002-encore-generator-core, 005-architecture-doc-governance,
  *                      006-factory-schema-lockstep, 007-generator-e2e-harness),
  *                      node_modules/, .git/, docs/encore-ts
@@ -309,6 +310,9 @@ export function makeBaselineFixture(): string {
   writeFile(root, 'modules/security-core/manifest.json', '{ "name": "security-core" }\n')
   writeFile(root, 'orchestration/template-orchestrator.md', '# orchestrator\n')
   writeFile(root, '.derived/codebase-index/x.json', '{}\n')
+  // website/ is the template's own Docusaurus docs site (template-dev only);
+  // it must not ship into a produced app.
+  writeFile(root, 'website/docusaurus.config.ts', "export default { title: 'acme-vue-encore' }\n")
 
   // --- born-with governance substrate (carried): the produced app's own
   // carried specs (000-bootstrap establishes Makefile) and CI

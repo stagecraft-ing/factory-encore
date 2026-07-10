@@ -32,6 +32,10 @@ export const GENERATOR_ARTIFACT_TOP_LEVEL: ReadonlySet<string> = new Set([
   'scripts', // the generator itself
   'modules', // the module catalog
   'orchestration', // create-time from-spec orchestration
+  'website', // Docusaurus documentation site FOR the template itself (baseUrl
+  // `/template-encore/`, title `acme-vue-encore`): template-dev docs with no
+  // runtime role in a produced app. Without this it fell through to the default
+  // `app` classification and shipped into every generated repo.
   '.derived', // compiled spec registry + codebase index. NOT carried: it is
   // regenerated per produced app at scaffold time over the produced tree;
   // carrying the template's copy would be stale (different specs/tools/etc.)

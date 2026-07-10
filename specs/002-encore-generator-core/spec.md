@@ -292,3 +292,19 @@ all three `setup-app` profiles, and the incremental `add-module` /
 - **Instant-revocation capability** (token-epoch / jti denylist): an
   auth-configuration option for deployments requiring it; not part of the
   base generator pipeline.
+
+## Amendment (2026-07-09): drop the template website/ from produced apps
+
+The born-with carry-forward classifier (`scripts/lib/born-with.ts`) is
+whitelist-by-default: any top-level entry not in a skip set is classified
+`'app'` by `classifyEntry` and copied into the produced app. The template's own
+Docusaurus documentation site (`website/`, `baseUrl: /template-encore/`) matched
+no skip set, so it shipped into every generated tenant repo despite documenting
+template-encore itself and having no runtime role in a produced app. Added
+`'website'` to `GENERATOR_ARTIFACT_TOP_LEVEL` (the same treatment as `scripts` /
+`modules` / `orchestration` / `.derived`), with a seeded baseline-fixture entry
+and a negative assertion in `setup-app.test.ts` so the drop is exercised.
+`requirements/` (factory pipeline output) and the born-with `specs/` corpus are
+intentionally still carried.
+
+Couples the born-with policy change to its owning spec per the coupling gate.

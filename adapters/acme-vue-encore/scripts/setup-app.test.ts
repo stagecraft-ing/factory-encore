@@ -64,8 +64,10 @@ describe('copyBaseline: born-with carry-forward', () => {
     expect(fs.existsSync(path.join(dest, 'specs', '008-data-redis-promotion-dual-composition'))).toBe(false)
   })
 
-  it('does not carry generator artifacts (the generator, the catalog, orchestration, .derived)', () => {
-    for (const artifact of ['scripts', 'modules', 'orchestration', '.derived']) {
+  it('does not carry generator artifacts (the generator, the catalog, orchestration, .derived, website)', () => {
+    // `website/` is the template's own Docusaurus docs site (template-dev only);
+    // it has no runtime role in a produced app and must not ship into it.
+    for (const artifact of ['scripts', 'modules', 'orchestration', '.derived', 'website']) {
       expect(fs.existsSync(path.join(dest, artifact))).toBe(false)
     }
   })
