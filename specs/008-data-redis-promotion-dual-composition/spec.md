@@ -35,7 +35,7 @@ summary: >
   dual can compose modules into the internal clone, unblocking the dual
   community-board fixture and the "public cannot see triage / staff-only
   mutations" trust-zone test. Companion to OAP spec 227, which owns the
-  stagecraft create-project surface and the deployd previewRedis dev-only
+  statecraft create-project surface and the deployd previewRedis dev-only
   provisioning that pairs with the promoted resource.
 extends:
   # Meta-spec self-registration: this spec adds its own id to
@@ -83,7 +83,7 @@ references:
 # 008. Honest module surfaces: data-redis promotion, dual module composition, and the CORS knob
 
 > Provenance: adapter-side companion to OAP spec
-> `227-create-project-infra-config-projection`, which reframes the stagecraft
+> `227-create-project-infra-config-projection`, which reframes the statecraft
 > "Create New Project" surface as a projection of the adapter manifest (feature
 > modules) and Encore's infra.config vocabulary (infrastructure resources), and
 > adds a deployd `previewRedis` dev-only provisioning path. That projection is
@@ -210,7 +210,7 @@ separate, reviewable acts.
 
 ## 6. Out of scope
 
-- The stagecraft create-project surface (derived catalog, two-axis selector,
+- The statecraft create-project surface (derived catalog, two-axis selector,
   infra.config projection) and the deployd `previewRedis` dev-only provisioning:
   owned by OAP spec 227.
 - Per-environment topology divergence (Option B): the app's topology is

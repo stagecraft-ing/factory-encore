@@ -2,15 +2,15 @@
 # run-e2e.sh -- standalone end-to-end test of factory-encore + template-encore.
 #
 # Proves that the factory-encore generator, driven directly against a
-# template-encore checkout, can do everything stagecraft's create-project flow
+# template-encore checkout, can do everything statecraft's create-project flow
 # does: materialise the four profile prebuilts (minimal/public/internal/dual)
 # and compose every opt-in module, with each produced app verified by a real
-# build (npm install + encore check + typecheck + build). No stagecraft, no OAP.
+# build (npm install + encore check + typecheck + build). No statecraft, no OAP.
 #
-# It replicates the stagecraft contract found in:
-#   platform/services/stagecraft/api/projects/scaffold/templateCache.ts  (prebuild)
-#   platform/services/stagecraft/api/projects/scaffold/perRequestScaffold.ts (compose)
-#   platform/services/stagecraft/api/projects/scaffold/moduleCatalog.ts  (INSTALL_ORDER)
+# It replicates the statecraft contract found in:
+#   platform/services/statecraft/api/projects/scaffold/templateCache.ts  (prebuild)
+#   platform/services/statecraft/api/projects/scaffold/perRequestScaffold.ts (compose)
+#   platform/services/statecraft/api/projects/scaffold/moduleCatalog.ts  (INSTALL_ORDER)
 #
 # Usage:
 #   ./run-e2e.sh                      full matrix: prebuild + every combo + build
@@ -39,7 +39,7 @@ prune_modules() {
 }
 
 # ---------------------------------------------------------------------------
-# Stage 1 -- prebuild (stagecraft ensurePrebuilts). For each profile, run the
+# Stage 1 -- prebuild (statecraft ensurePrebuilts). For each profile, run the
 # manifest-declared generator with --source <template-encore>. NO_INSTALL keeps
 # it fast and (because the generator treats NO_INSTALL as implying --no-git)
 # VCS-free, matching the warmup path exactly.
@@ -71,7 +71,7 @@ prebuild_all() {
 }
 
 # ---------------------------------------------------------------------------
-# Structural assertions -- prove the generator did what stagecraft expects,
+# Structural assertions -- prove the generator did what statecraft expects,
 # without compiling. $1 = app root dir, $2 = profile, $3 = comma module list.
 # Appends "key=verdict" tokens to the global ASSERT_NOTES; sets ASSERT_RC.
 # ---------------------------------------------------------------------------
@@ -170,7 +170,7 @@ combo() {
   # compose extras in INSTALL_ORDER; dual takes none (perRequestScaffold:103).
   # Skip any module the profile already shipped by default (post-STRUCT-1: read
   # from the prebuilt's template.json, the profile-default authority), mirroring
-  # stagecraft moduleCatalog::extrasFor filtering out profile built-ins.
+  # statecraft moduleCatalog::extrasFor filtering out profile built-ins.
   local composed="" skipped=""
   if [ "$profile" != "dual" ] && [ -n "$mods" ]; then
     local want=",$mods,"

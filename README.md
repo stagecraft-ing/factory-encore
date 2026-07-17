@@ -1,4 +1,4 @@
-# [factory-encore](https://stagecraft-ing.github.io/factory-encore) [![CI](https://github.com/stagecraft-ing/factory-encore/actions/workflows/ci.yml/badge.svg)](https://github.com/stagecraft-ing/factory-encore/actions/workflows/ci.yml)
+# [factory-encore](https://statecrafting.github.io/factory-encore) [![CI](https://github.com/statecrafting/factory-encore/actions/workflows/ci.yml/badge.svg)](https://github.com/statecrafting/factory-encore/actions/workflows/ci.yml)
 ![factory-encore](.github/img/factory-encore-github-banner.jpg)
 
 A technology-agnostic software factory framework. `factory-encore` separates the
@@ -9,7 +9,7 @@ structured, frozen Build Specification; an adapter turns that specification into
 a running application.
 
 This repository is an original, independent implementation of the
-[Open Agentic Platform](https://github.com/stagecraft-ing/open-agentic-platform)
+[Open Agentic Platform](https://github.com/statecrafting/open-agentic-platform)
 (OAP) factory standard. The contract schemas mirror that published standard; the
 process layer and documentation are authored here. Released under Apache-2.0
 (see `LICENSE` and `NOTICE`).

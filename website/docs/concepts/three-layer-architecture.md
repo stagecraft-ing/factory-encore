@@ -25,7 +25,7 @@ The contract layer (`contract/`) is the formal interface between process and imp
 | **Pipeline State** | Durable execution state for resumability: stage progress, scaffolding status, verification results, and an audit trail. |
 | **Governance Envelope** | The admission brief a process files: its objective class, ceilings, human-in-the-loop gate predicates, and the artifacts it emits. |
 
-The contract is an open standard. Its canonical home is the [Open Agentic Platform](https://github.com/stagecraft-ing/open-agentic-platform) repository; this repository mirrors specific versions (Build Spec and Adapter Manifest at 1.1.0; Verification, Pipeline State, and Governance Envelope at 1.0.0). The schemas are not authored here and should not be edited locally.
+The contract is an open standard. Its canonical home is the [Open Agentic Platform](https://github.com/statecrafting/open-agentic-platform) repository; this repository mirrors specific versions (Build Spec and Adapter Manifest at 1.1.0; Verification, Pipeline State, and Governance Envelope at 1.0.0). The schemas are not authored here and should not be edited locally.
 
 ## Adapter layer
 

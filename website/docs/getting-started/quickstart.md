@@ -15,7 +15,7 @@ The repository is `private: true` and is not installable as an npm package. You 
 ## Clone and set up
 
 ```bash
-git clone https://github.com/stagecraft-ing/factory-encore.git
+git clone https://github.com/statecrafting/factory-encore.git
 cd factory-encore
 make setup
 ```
@@ -34,7 +34,7 @@ The generator requires a checkout of `template-encore` (the lean baseline it clo
 
 ```bash
 cd ..
-git clone https://github.com/stagecraft-ing/template-encore.git
+git clone https://github.com/statecrafting/template-encore.git
 cd factory-encore
 ```
 

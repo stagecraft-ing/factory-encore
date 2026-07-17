@@ -161,7 +161,7 @@ agents:
 scaffold:
   source:
     kind: "upstream-git"
-    remote: "stagecraft-ing/template-encore"
+    remote: "statecrafting/template-encore"
     default_ref: "main"
   description: >
     The base Encore.ts + Vue 3 (PrimeVue) + rauthy project: the template-encore

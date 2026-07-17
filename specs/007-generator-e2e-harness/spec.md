@@ -17,8 +17,8 @@ summary: >
   `user_account` column) passes lockstep and only breaks at `encore check`. This
   spec stands up an end-to-end harness that drives the generator (spec 002)
   directly against a template-encore checkout across the full profile x module
-  matrix (22 produced apps) and verifies each, replicating stagecraft's scaffold
-  contract with no stagecraft and no OAP in the loop. It runs on three lanes,
+  matrix (22 produced apps) and verifies each, replicating statecraft's scaffold
+  contract with no statecraft and no OAP in the loop. It runs on three lanes,
   mirroring OAP's expensive-e2e posture: a cheap structural matrix gated per-PR
   on the generator surface and folded into the terminal ci-gate; a full
   build-matrix nightly against the pinned ref (non-gating, issue-on-failure); and
@@ -52,11 +52,11 @@ So a module written against an older baseline (an `audit.ts` actor field renamed
 `pk_user_account` TEXT to `id` UUID) passes both gates and only fails when a
 generated app actually runs `encore check`. This spec closes that gap with an
 end-to-end harness that produces real apps and builds them, the way the
-consuming platform (stagecraft) would.
+consuming platform (statecraft) would.
 
 The harness is also the parity artifact for the thin-consumer thesis: it proves
-the generator plus the baseline can enact everything stagecraft's create-project
-flow needs, with no stagecraft and no open-agentic-platform in the loop.
+the generator plus the baseline can enact everything statecraft's create-project
+flow needs, with no statecraft and no open-agentic-platform in the loop.
 
 ## 2. Territory
 
@@ -75,7 +75,7 @@ it does not redefine them.
 
 ### 3.1 The matrix
 
-#### FR-001: Stagecraft-faithful production
+#### FR-001: Statecraft-faithful production
 
 For each single-app profile (`minimal`, `public`, `internal`) the harness MUST
 produce: the base app (no extra modules), each of the five catalog modules
@@ -85,7 +85,7 @@ Profiles are materialised with `setup-app.ts --profile <name> --source
 <template-encore>` (and `setup-dual-app.ts` for dual) under `NO_INSTALL=true`;
 extra modules are composed with `add-module.ts <mod> --no-install` in the
 catalog `INSTALL_ORDER`, skipping any module the profile already ships by default
-(read from the prebuilt `template.json`). This mirrors stagecraft's
+(read from the prebuilt `template.json`). This mirrors statecraft's
 `ensurePrebuilts` + `scaffoldFromPrebuilt` + `moduleCatalog` exactly.
 
 ### 3.2 Two verification layers
@@ -197,5 +197,5 @@ e2e:struct` / `e2e:build` and the three lanes fail visibly on a red combo
 - **Per-app infrastructure isolation**: the shared-local-DB reset is a harness
   workaround; a real deployment uses per-app infra and is not this spec's
   concern.
-- **A byte-identical stagecraft parity test**: asserting stagecraft's scaffold
-  path reproduces these trees is downstream (stagecraft) work, not owned here.
+- **A byte-identical statecraft parity test**: asserting statecraft's scaffold
+  path reproduces these trees is downstream (statecraft) work, not owned here.

@@ -16,7 +16,7 @@ The Open Agentic Platform publishes the canonical contract schemas and provides 
 
 ### What is template-encore?
 
-The lean baseline application that the `acme-vue-encore` generator clones. It is a separate repository (`stagecraft-ing/template-encore`) containing a complete Encore.ts + Vue 3 application with governance, auth, and database already wired. The generator copies it and composes modules into it.
+The lean baseline application that the `acme-vue-encore` generator clones. It is a separate repository (`statecrafting/template-encore`) containing a complete Encore.ts + Vue 3 application with governance, auth, and database already wired. The generator copies it and composes modules into it.
 
 ## Setup
 

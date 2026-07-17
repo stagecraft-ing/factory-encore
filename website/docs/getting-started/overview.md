@@ -4,7 +4,7 @@
 
 ## What factory-encore is
 
-The repository is an original, independent implementation of the [Open Agentic Platform](https://github.com/stagecraft-ing/open-agentic-platform) (OAP) factory standard. The five contract schemas mirror OAP's published standard; the process layer and documentation are authored here. Released under Apache-2.0.
+The repository is an original, independent implementation of the [Open Agentic Platform](https://github.com/statecrafting/open-agentic-platform) (OAP) factory standard. The five contract schemas mirror OAP's published standard; the process layer and documentation are authored here. Released under Apache-2.0.
 
 ## The three layers
 

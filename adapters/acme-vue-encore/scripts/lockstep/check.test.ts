@@ -32,7 +32,7 @@ function makeSyntheticBaseline(status: 'deferred' | 'pinned'): { source: string;
   // so the synthetic baseline ships core services + the invariant spec only.
 
   const lock: Lockfile = {
-    upstreamSource: 'github.com/stagecraft-ing/template-encore',
+    upstreamSource: 'github.com/statecrafting/template-encore',
     pinnedRef: 'deadbeef',
     invariantPin: {
       status,

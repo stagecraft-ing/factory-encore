@@ -29,7 +29,7 @@ summary: >
   auto-detected by the baseline lib/redis client (REDIS_HOST/REDIS_USER/
   REDIS_PASSWORD; there is no REDIS_URL). The module
   therefore requires data-postgres (always) and optionally peers with data-redis
-  (large tier only). Distinct from stagecraft's own control-plane sweepers
+  (large tier only). Distinct from statecraft's own control-plane sweepers
   (OAP spec 224), which stay on per-sweeper K8s CronJobs.
 establishes:
   - "adapters/acme-vue-encore/modules/cron/"
@@ -282,5 +282,5 @@ lands, a generated app using cron registers its jobs through the FR-007 seam.
   residual.
 - Per-service databases: INV-11 forbids them; the single `SQLDatabase("app")` is
   the only database.
-- Stagecraft's own control-plane sweepers: OAP spec 224 (per-sweeper K8s
+- Statecraft's own control-plane sweepers: OAP spec 224 (per-sweeper K8s
   CronJobs), unchanged and distinct.

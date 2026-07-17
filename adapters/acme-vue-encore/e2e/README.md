@@ -1,22 +1,22 @@
 # acme-vue-encore generator e2e
 
 An end-to-end test of the **acme-vue-encore generator** against the
-**template-encore** baseline, with no stagecraft and no open-agentic-platform in
+**template-encore** baseline, with no statecraft and no open-agentic-platform in
 the loop. Governed by spec **`007-generator-e2e-harness`**.
 
-The point: stagecraft's create-project flow is just an orchestrator. The real
+The point: statecraft's create-project flow is just an orchestrator. The real
 work (materialise a profile, compose modules, produce a runnable Encore app) is
 done by this adapter's generator scripts (`scripts/`) running with
 template-encore as `--source`. This harness drives those scripts directly and
-verifies that everything stagecraft needs to enact can in fact be enacted by the
+verifies that everything statecraft needs to enact can in fact be enacted by the
 generator and the baseline alone, across all four profiles and every opt-in
 module.
 
-## What it replicates (the stagecraft contract)
+## What it replicates (the statecraft contract)
 
-It mirrors the three stagecraft scaffold steps:
+It mirrors the three statecraft scaffold steps:
 
-| Stagecraft step | What this harness does |
+| Statecraft step | What this harness does |
 |---|---|
 | Prebuild four profiles (`ensurePrebuilts`) | runs `setup-app.ts --profile {minimal,public,internal}` and `setup-dual-app.ts`, all with `--source <template-encore> --dest ... --yes` under `NO_INSTALL=true` |
 | Compose selected modules (`scaffoldFromPrebuilt`) | copies the prebuilt tree (minus `.git`/`node_modules`), runs `add-module.ts <mod> --yes --no-install --root <dest>` per extra, in `INSTALL_ORDER` |

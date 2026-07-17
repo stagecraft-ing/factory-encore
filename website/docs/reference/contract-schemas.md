@@ -1,6 +1,6 @@
 # Contract schemas
 
-The contract layer defines five formal schemas that govern the boundary between the process and adapter layers. These schemas are an open standard; their canonical home is the [Open Agentic Platform](https://github.com/stagecraft-ing/open-agentic-platform) repository. This repository mirrors specific versions so the process and any adapter can be developed against a stable interface.
+The contract layer defines five formal schemas that govern the boundary between the process and adapter layers. These schemas are an open standard; their canonical home is the [Open Agentic Platform](https://github.com/statecrafting/open-agentic-platform) repository. This repository mirrors specific versions so the process and any adapter can be developed against a stable interface.
 
 ## Version pins
 

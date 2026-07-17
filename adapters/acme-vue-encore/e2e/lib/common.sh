@@ -34,10 +34,10 @@ LOG_DIR="$OUT_DIR/logs"
 RESULTS_TSV="$OUT_DIR/results.tsv"
 
 # The five opt-in modules, in dependency-respecting INSTALL_ORDER (this is the
-# exact order stagecraft's moduleCatalog.ts::INSTALL_ORDER applies).
+# exact order statecraft's moduleCatalog.ts::INSTALL_ORDER applies).
 INSTALL_ORDER=(security-core data-postgres data-redis api-gateway user-management)
 
-# The four stagecraft prebuild profiles (templateCache.ts::PROFILE_SPECS).
+# The four statecraft prebuild profiles (templateCache.ts::PROFILE_SPECS).
 PROFILES=(minimal public internal dual)
 
 # ---------------------------------------------------------------------------
@@ -95,7 +95,7 @@ preflight() {
 }
 
 # Run a tsx-driven generator script with NO_INSTALL/NO_GIT so generation is
-# fast and VCS-free (exactly as stagecraft's warmup runs it). Logs to $2.
+# fast and VCS-free (exactly as statecraft's warmup runs it). Logs to $2.
 run_tsx() {
   local logf="$1"; shift
   NO_INSTALL=true node "$TSX_CLI" "$@" >"$logf" 2>&1

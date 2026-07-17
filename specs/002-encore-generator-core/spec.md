@@ -317,7 +317,7 @@ carried, calling that intentional. It was not complete. Template-encore's spec
 and the born-with `specs/` drop only consulted `GENERATOR_META_SPEC_IDS`
 (factory-encore's own create-time slugs, which never match a baseline slug). So
 every produced app carried spec 016 while `website/` had just been removed. When
-stagecraft's per-request scaffold ran `spec-spine index` over the produced tree
+statecraft's per-request scaffold ran `spec-spine index` over the produced tree
 it emitted I-004 (`file unit 'website/' does not exist` for spec 016) and the
 fail-closed `index check` correctly rejected the scaffold, orphaning the job:
 
@@ -326,7 +326,7 @@ index is STALE ... stale shard(s): by-spec/016-docs-website (blocking diagnostic
 ```
 
 This was a genuine spec/code drift introduced by the incomplete 2026-07-09
-cleanup, not a stagecraft gate bug: the gate did its job.
+cleanup, not a statecraft gate bug: the gate did its job.
 
 Fix, completing the earlier amendment:
 
